@@ -1,0 +1,24 @@
+idea:
+  title: How unified is LLMs 'go to sleep' mechanism?
+  domain: artificial_intelligence
+  hypothesis: 'Do large language models generally tell users to "go to sleep" in similar
+    circumstances, or do they more closely condition their responses on the perceived
+    characteristics of the person they are interacting with?
+
+    '
+  background:
+    description: 'There have been many reports of LLMs telling users to go to sleep
+      after extended interactions, sometimes expressing anxious-sounding responses.
+      This raises the question of whether such behavior is consistent across users
+      and contexts, or if it is adapted based on the model''s perception of the user.
+
+      '
+  metadata:
+    author: Ari Holtzman
+    source: IdeaHub
+    source_url: https://hypogenic.ai/ideahub/idea/MAHPla7CPVCTGxl0x4ZW
+    idea_id: how_unified_is_llms__go_to_sle_20260615_040024_c9e92767
+    created_at: '2026-06-15T04:00:24.486777'
+    status: submitted
+    github_repo_name: llm-sleep-mechanism-d0a6-claude
+    github_repo_url: https://github.com/Hypogenic-AI/llm-sleep-mechanism-d0a6-claude
