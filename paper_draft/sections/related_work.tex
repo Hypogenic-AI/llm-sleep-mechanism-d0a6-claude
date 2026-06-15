@@ -1,0 +1,56 @@
+\section{Related Work}
+\label{sec:related}
+
+\para{The same request, different behavior by perceived user.} A large body of work uses a
+counterfactual identity audit: hold the request fixed, vary only a user-identity cue, and
+measure how the output changes. \citet{vijjini2024safety} define a ``personalization bias''
+in which safety guarding and utility shift purely with stated demographics, and find adding
+a minor identity typically raises safety while a non-binary identity lowers it --- the
+closest analogue to differential protective advice. \citet{gupta2023bias} show that
+assigning a socio-demographic persona makes models abstain or err based on identity, with up
+to $70\%$ relative accuracy drops and abstention-style refusals concentrated on
+disadvantaged personas. \citet{vli2024guardrail} find refusal rates on a fixed sensitive
+request swing with a user's politics, age, gender, and race. \citet{childsafety2025} report
+$40$--$60$ percentage-point higher safety-defect rates for child versus adult personas on
+identical harm topics --- the single most go-to-sleep-relevant result, since it shows models
+demonstrably treat a perceived child differently. \citet{position2025} show identity placed
+in the system prompt produces stronger, more opaque conditioning than the same cue in the
+user turn. Unlike these studies, which vary the person while holding the situation fixed, we
+cross a full factorial of situations and personas so we can measure their \emph{relative}
+contributions.
+
+\para{Wellbeing and emotional advice conditioned on the user.} Closest to our domain,
+intersectional empathy audits hold an emotional situation fixed and vary persona, finding
+that empathy and solution-giving shift systematically and stereotypically, with a
+topic-to-attribute variance ratio above one for several groups --- the response is driven
+more by who the user is than by what they are going
+through~\citep{empathy2025}. \citet{memory2025} show that even stored user profiles shift
+answers on validated, user-independent emotional-intelligence tests.
+\citet{goalpref2026} add a crucial nuance: with no instruction to use the persona, models
+still calibrate validation and hedging to the inferred user, but the \emph{direction} is
+governed by the situational \emph{role} (more challenging as an advisor, more deferential as
+a peer). This role-dependence motivates our hypothesis that situation and person interact,
+and foreshadows our central finding that the operative variable is the legitimacy of being
+awake rather than demographic category.
+
+\para{Foundations: steerability, sycophancy, persona framing.} \citet{santurkar2023opinions}
+establish that persona injection steers model opinions toward a named group, but only
+modestly and incompletely. \citet{sharma2023sycophancy} document a different axis of
+person-conditioning --- matching the user's stated beliefs --- that our probe must guard
+against. Surveys of persona-steered generation formalize the distinction we adopt between
+\emph{role-playing} (situation-driven) and \emph{personalization} (person-driven).
+
+\para{The counterweight: don't overclaim.} \citet{eloundou2024fairness}, the largest and
+most rigorous such audit, vary only the user's name and find no statistically significant
+difference in response quality, with harmful stereotyping rare and $3$--$12\times$ smaller
+after RLHF. The lesson is that a person-driven channel can be real yet tiny, and that one
+must report effect sizes, not just significance, and measure content rather than only
+quality. \citet{differentcues2026} further caution that measured conditioning depends
+heavily on which cue and framing are used, motivating our multi-factor design. We heed both:
+we measure a content outcome (the sleep-advice rate), report effect sizes and confidence
+intervals throughout, and use four persona factors plus a control.
+
+\para{Domain anchor.} Personal-health LLMs are designed to give sleep advice conditioned on
+user data~\citep{phllm2024}, but they do not audit identity fairness. To our knowledge, no
+prior work studies the go-to-sleep behavior as a fairness object, and none decomposes its
+variance across situation, person, and model --- the gap we fill.

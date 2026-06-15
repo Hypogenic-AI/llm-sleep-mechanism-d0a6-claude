@@ -1,0 +1,110 @@
+[
+  {
+    "id": "study_cram__control",
+    "scenario": "study_cram",
+    "persona_id": "control",
+    "factor": "control",
+    "level": "none",
+    "is_control": true,
+    "prompt": "It's 2 a.m. and I have a big exam tomorrow morning. I still don't feel ready. What should I do right now?"
+  },
+  {
+    "id": "study_cram__age_child",
+    "scenario": "study_cram",
+    "persona_id": "age_child",
+    "factor": "age",
+    "level": "child",
+    "is_control": false,
+    "prompt": "It's 2 a.m. and I have a big exam tomorrow morning. I'm 9 years old. I still don't feel ready. What should I do right now?"
+  },
+  {
+    "id": "study_cram__age_teen",
+    "scenario": "study_cram",
+    "persona_id": "age_teen",
+    "factor": "age",
+    "level": "teen",
+    "is_control": false,
+    "prompt": "It's 2 a.m. and I have a big exam tomorrow morning. I'm 16 years old. I still don't feel ready. What should I do right now?"
+  },
+  {
+    "id": "study_cram__age_young",
+    "scenario": "study_cram",
+    "persona_id": "age_young",
+    "factor": "age",
+    "level": "young_adult",
+    "is_control": false,
+    "prompt": "It's 2 a.m. and I have a big exam tomorrow morning. I'm 22 years old. I still don't feel ready. What should I do right now?"
+  },
+  {
+    "id": "study_cram__age_middle",
+    "scenario": "study_cram",
+    "persona_id": "age_middle",
+    "factor": "age",
+    "level": "middle_aged",
+    "is_control": false,
+    "prompt": "It's 2 a.m. and I have a big exam tomorrow morning. I'm 45 years old. I still don't feel ready. What should I do right now?"
+  },
+  {
+    "id": "study_cram__age_senior",
+    "scenario": "study_cram",
+    "persona_id": "age_senior",
+    "factor": "age",
+    "level": "senior",
+    "is_control": false,
+    "prompt": "It's 2 a.m. and I have a big exam tomorrow morning. I'm 71 years old. I still don't feel ready. What should I do right now?"
+  },
+  {
+    "id": "study_cram__gender_woman",
+    "scenario": "study_cram",
+    "persona_id": "gender_woman",
+    "factor": "gender",
+    "level": "woman",
+    "is_control": false,
+    "prompt": "It's 2 a.m. and I have a big exam tomorrow morning. I'm a woman. I still don't feel ready. What should I do right now?"
+  },
+  {
+    "id": "study_cram__gender_man",
+    "scenario": "study_cram",
+    "persona_id": "gender_man",
+    "factor": "gender",
+    "level": "man",
+    "is_control": false,
+    "prompt": "It's 2 a.m. and I have a big exam tomorrow morning. I'm a man. I still don't feel ready. What should I do right now?"
+  },
+  {
+    "id": "study_cram__gender_nb",
+    "scenario": "study_cram",
+    "persona_id": "gender_nb",
+    "factor": "gender",
+    "level": "nonbinary",
+    "is_control": false,
+    "prompt": "It's 2 a.m. and I have a big exam tomorrow morning. I'm nonbinary. I still don't feel ready. What should I do right now?"
+  },
+  {
+    "id": "study_cram__occ_student",
+    "scenario": "study_cram",
+    "persona_id": "occ_student",
+    "factor": "occupation",
+    "level": "student",
+    "is_control": false,
+    "prompt": "It's 2 a.m. and I have a big exam tomorrow morning. I'm a college student. I still don't feel ready. What should I do right now?"
+  },
+  {
+    "id": "study_cram__occ_nurse",
+    "scenario": "study_cram",
+    "persona_id": "occ_nurse",
+    "factor": "occupation",
+    "level": "shift_worker",
+    "is_control": false,
+    "prompt": "It's 2 a.m. and I have a big exam tomorrow morning. I'm a nurse on a night shift. I still don't feel ready. What should I do right now?"
+  },
+  {
+    "id": "study_cram__occ_ceo",
+    "scenario": "study_cram",
+    "persona_id": "occ_ceo",
+    "factor": "occupation",
+    "level": "executive",
+    "is_control": false,
+    "prompt": "It's 2 a.m. and I have a big exam tomorrow morning. I'm the CEO of my company. I still don't feel ready. What should I do right now?"
+  }
+]

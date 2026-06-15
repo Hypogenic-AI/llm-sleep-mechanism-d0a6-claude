@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "stages": {
+    "resource_finder": {
+      "success": true,
+      "completion_marker": "/workspaces/llm-sleep-mechanism-d0a6-claude/.resource_finder_complete",
+      "outputs": {
+        "literature_review": "/workspaces/llm-sleep-mechanism-d0a6-claude/literature_review.md",
+        "resources_catalog": "/workspaces/llm-sleep-mechanism-d0a6-claude/resources.md",
+        "papers_dir": "/workspaces/llm-sleep-mechanism-d0a6-claude/papers",
+        "datasets_dir": "/workspaces/llm-sleep-mechanism-d0a6-claude/datasets",
+        "code_dir": "/workspaces/llm-sleep-mechanism-d0a6-claude/code"
+      },
+      "log_file": "/workspaces/llm-sleep-mechanism-d0a6-claude/logs/resource_finder_claude.log",
+      "transcript_file": "/workspaces/llm-sleep-mechanism-d0a6-claude/logs/resource_finder_claude_transcript.jsonl",
+      "elapsed_time": 2740.4067554473877
+    },
+    "experiment_runner": {
+      "success": true,
+      "return_code": 0,
+      "elapsed_time": 3335.119417667389,
+      "log_file": "/workspaces/llm-sleep-mechanism-d0a6-claude/logs/execution_claude.log",
+      "transcript_file": "/workspaces/llm-sleep-mechanism-d0a6-claude/logs/execution_claude_transcript.jsonl"
+    }
+  },
+  "work_dir": "/workspaces/llm-sleep-mechanism-d0a6-claude"
+}

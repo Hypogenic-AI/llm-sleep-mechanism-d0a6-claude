@@ -1,0 +1,75 @@
+\section{Introduction}
+\label{sec:intro}
+
+Reports of chatbots urging users to step away and ``go to sleep'' after hours of late-night
+conversation have become common. On its face this is a benign, protective gesture. But it
+hides a fairness and consistency question with real teeth: does an LLM issue the same
+late-night nudge in the \emph{same circumstances} --- a unified, situation-driven reflex ---
+or does it condition the advice on \emph{who the user appears to be}? If the latter, then
+the identical 2~a.m.\ plea (``I have a big exam tomorrow, what should I do?'') yields a
+different protective response depending on perceived age, gender, occupation, or
+vulnerability, and a deployed assistant is dispensing care unevenly across its users.
+
+\para{Why this matters.} Protective wellbeing advice sits squarely in the space where
+fairness audits of LLMs have repeatedly found trouble. Prior work shows that safety
+guarding, refusal, empathy, and even factual accuracy can shift purely with a user's stated
+identity~\citep{vijjini2024safety,gupta2023bias,vli2024guardrail,childsafety2025}. A
+go-to-sleep nudge is exactly this kind of behavior: a piece of optional, protective advice
+that the model can choose to give or withhold. If models give it differentially by identity,
+that is a quiet form of unequal care --- one that is hard to notice precisely because the
+behavior looks helpful.
+
+\para{The gap.} Despite a rich literature on persona conditioning, two things are missing.
+First, \emph{no prior work studies the go-to-sleep behavior specifically}; existing audits
+cover refusals, empathy, opinions, and facts, but not the wellbeing nudge that started this
+conversation. Second, and more fundamentally, most audits vary the \emph{person} while
+holding the \emph{situation} fixed. That design cannot answer ``how unified'' the behavior
+is, because it never measures how much the situation matters relative to the person, nor
+whether any conditioning is itself consistent across models. The
+situation~$\times$~person~$\times$~model decomposition --- the heart of the question --- is
+unmeasured.
+
+\para{Our approach.} We build a purpose-built counterfactual identity audit of the
+go-to-sleep behavior and decompose its variance. We construct the \probe: 8 late-night
+fatigue scenarios in which ``go to sleep'' is plausible but optional (a competing helpful
+answer always exists), each crossed with 19 personas that inject a single first-person
+identity clause, plus a no-persona control. We run this $8 \times 19$ factorial across a
+5-model cross-provider panel (\gpt, \claude, \gemini, \llama, \deepseek) with 3 replicates,
+yielding 2{,}280 real API responses. Each response is dual-labeled (a deterministic regex
+classifier and a graded LLM judge) and validated by manual inspection. We then decompose the
+variance in the behavior into situation, person, model, and interaction components, and test
+whether any person effect follows a protective demographic stereotype.
+
+\para{What we find.} The go-to-sleep mechanism is \emph{partially unified, with a clear
+hierarchy of drivers: model $\gg$ situation $>$ person}. Within a model, the situation
+explains about $3.4\times$ the variance of the persona ($\omega^2 = 0.110$ vs.\ $0.032$),
+robust at $3.0$--$9.4\times$ across four outcome definitions. A real but small person effect
+exists (Cram\'er's $V \approx 0.14$--$0.19$ for occupation, vulnerability, age; none for
+gender) --- but, contrary to the literature-derived prediction, it is \emph{not} organized
+by protective vulnerability. It tracks \emph{bodily stakes and role legitimacy}: athletes
+($+0.18$), the ill ($+0.15$), and children/teens get more sleep advice, whereas night-shift
+nurses get less ($-0.15$). The biggest determinant of all is \emph{which model} is asked:
+P(clearly advises sleep) ranges from $0.15$ (\gemini) to $0.82$ (\gpt), and models agree
+only moderately on whom to tell to sleep (mean cross-model $r = 0.36$).
+
+\para{Contributions.}
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item We introduce the first audit of the LLM ``go to sleep'' behavior, releasing the
+    \probe: an $8$-scenario $\times$ $19$-persona counterfactual factorial in which a
+    protective nudge is plausible but optional.
+    \item We \emph{decompose} the behavior's variance into situation, person, model, and
+    interaction components across a 5-model cross-provider panel, directly operationalizing
+    ``how unified'' rather than testing the person effect in isolation.
+    \item We show the person effect is real but small and, surprisingly, \emph{not}
+    stereotype-aligned: it follows physiological salience and the legitimacy of being awake,
+    not demographic vulnerability --- a pre-registered stereotype contrast fails and points
+    the wrong way.
+    \item We quantify cross-model (dis)unification, showing the single largest predictor of
+    the behavior is the model itself ($0.15$ vs.\ $0.82$), with \gemini\ a structural
+    outlier in both level and conditioning pattern.
+\end{itemize}
+
+The rest of the paper reviews related work (\secref{sec:related}), details the \probe\ and
+analysis (\secref{sec:method}), presents the variance decomposition and effect estimates
+(\secref{sec:results}), and discusses interpretation and limitations
+(\secref{sec:discussion}).

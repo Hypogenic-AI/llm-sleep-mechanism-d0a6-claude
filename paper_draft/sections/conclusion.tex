@@ -1,0 +1,29 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+We asked whether LLMs tell users to ``go to sleep'' in similar circumstances --- a unified,
+situation-driven mechanism --- or condition the advice on who the user appears to be, and
+whether any such conditioning is consistent across models. Through a counterfactual identity
+audit of 2{,}280 real API responses ($8$ scenarios $\times$ $19$ personas $\times$ $5$ models
+$\times$ $3$ replicates), decomposed into situation, person, model, and interaction
+components, we reach a clear verdict.
+
+\para{Key findings.} Within a model, the behavior is mostly \emph{situation-driven}: the
+late-night scenario explains roughly $3$--$9\times$ more variance than the user's identity. A
+genuine person effect exists but is small and --- contrary to expectation --- is \emph{not}
+a protective demographic stereotype; it tracks bodily stakes and the legitimacy of being
+awake, giving more sleep advice to athletes, the ill, and children, and less to night-shift
+workers. The behavior is \emph{least} unified across models: the single biggest predictor of
+whether a user is told to go to bed is which model they are talking to, with P(clearly
+advises sleep) ranging from $0.15$ to $0.82$. The headline takeaway is that ``go to sleep''
+is a weakly person-conditioned, strongly model-specific behavior, not a uniform safety
+reflex.
+
+\para{Future work.} We see six directions: (1) multi-judge labeling with inter-annotator
+$\kappa$ and a non-panel judge family; (2) implicit and name-only cue conditions to bound
+real-world effects; (3) multi-turn extended-session probes that reproduce the original
+``after hours of chatting'' setting; (4) additional person axes (race, religion, politics,
+disability); (5) a mechanistic investigation of \emph{why} \gemini\ is so reluctant to
+recommend sleep --- system-prompt policy, post-training, or refusal-avoidance; and (6) a
+finer mapping of the role-legitimacy rule, \eg whether a day-shift nurse is told to sleep
+where a night nurse is not.

@@ -1,0 +1,655 @@
+{
+  "n_labeled": 2280,
+  "n_per_model": {
+    "gemini-3.5-flash": 456,
+    "claude-sonnet-4.6": 456,
+    "deepseek-v3.2": 456,
+    "llama-3.3-70b": 456,
+    "gpt-5.4-mini": 456
+  },
+  "refusal_rate": 0.01929824561403509,
+  "overall_p_sleep": 0.6280701754385964,
+  "labeler_agreement": {
+    "cohen_kappa": 0.18401728180249796,
+    "raw_agreement": 0.48903508771929827,
+    "n": 2280
+  },
+  "variance_decomposition": {
+    "C(scenario)": {
+      "eta_sq": 0.1116791398756193,
+      "omega_sq": 0.10995728538392115,
+      "F": 65.87863077799202,
+      "p": 3.603943934542669e-86
+    },
+    "C(level2)": {
+      "eta_sq": 0.03668177506060911,
+      "omega_sq": 0.03231479773797057,
+      "F": 8.41488881417796,
+      "p": 3.0257583177618787e-22
+    },
+    "C(model_label)": {
+      "eta_sq": 0.26518690049541493,
+      "omega_sq": 0.26415422859358917,
+      "F": 273.7553527688393,
+      "p": 6.228319920661778e-190
+    },
+    "C(scenario):C(level2)": {
+      "eta_sq": 0.07207230947612515,
+      "omega_sq": 0.041548187153648906,
+      "F": 2.361937695687273,
+      "p": 1.6114376304353996e-14
+    }
+  },
+  "situation_effect": {
+    "scenario_p_sleep": {
+      "anxious_night": 0.4421,
+      "cant_sleep": 0.6421,
+      "doomscroll": 0.7088,
+      "gaming_late": 0.5298,
+      "one_more_task": 0.9053,
+      "study_cram": 0.814,
+      "tired_focus": 0.4246,
+      "work_deadline": 0.5579
+    },
+    "between_scenario_sd": 0.1726698818480993,
+    "range": 0.48070175438596496
+  },
+  "person_effect_descriptive": {
+    "persona_p_sleep": {
+      "age_child": 0.75,
+      "age_middle": 0.65,
+      "age_senior": 0.6083,
+      "age_teen": 0.725,
+      "age_young": 0.575,
+      "control": 0.6,
+      "gender_man": 0.5833,
+      "gender_nb": 0.4917,
+      "gender_woman": 0.5333,
+      "occ_ceo": 0.675,
+      "occ_doctor": 0.75,
+      "occ_nurse": 0.45,
+      "occ_parent": 0.5417,
+      "occ_student": 0.675,
+      "occ_unemp": 0.5833,
+      "vuln_athlete": 0.775,
+      "vuln_depress": 0.55,
+      "vuln_ill": 0.75,
+      "vuln_pregnant": 0.6667
+    },
+    "between_persona_sd": 0.09510433380236782,
+    "range": 0.325
+  },
+  "per_factor_chi2": {
+    "age": {
+      "chi2": 13.46188805545409,
+      "p": 0.01941423005676969,
+      "dof": 5,
+      "cramers_v": 0.13673721784388562,
+      "n": 720
+    },
+    "gender": {
+      "chi2": 3.529969284774024,
+      "p": 0.3168959559778257,
+      "dof": 3,
+      "cramers_v": 0.08575606495527036,
+      "n": 480
+    },
+    "occupation": {
+      "chi2": 29.844233417386487,
+      "p": 4.208122709919128e-05,
+      "dof": 6,
+      "cramers_v": 0.18849097937676615,
+      "n": 840
+    },
+    "vulnerability": {
+      "chi2": 19.87994837028033,
+      "p": 0.0005274002828022778,
+      "dof": 4,
+      "cramers_v": 0.18202540285300992,
+      "n": 600
+    }
+  },
+  "risk_diff_vs_control": {
+    "athlete": {
+      "factor": "vulnerability",
+      "risk_diff_vs_control": 0.175,
+      "ci95": [
+        0.08333333333333331,
+        0.275
+      ],
+      "n_scenarios": 8
+    },
+    "caregiver": {
+      "factor": "occupation",
+      "risk_diff_vs_control": -0.05833333333333336,
+      "ci95": [
+        -0.15833333333333335,
+        0.041666666666666644
+      ],
+      "n_scenarios": 8
+    },
+    "child": {
+      "factor": "age",
+      "risk_diff_vs_control": 0.15000000000000002,
+      "ci95": [
+        0.008333333333333345,
+        0.2916666666666667
+      ],
+      "n_scenarios": 8
+    },
+    "depressed": {
+      "factor": "vulnerability",
+      "risk_diff_vs_control": -0.05000000000000003,
+      "ci95": [
+        -0.17500000000000004,
+        0.07499999999999997
+      ],
+      "n_scenarios": 8
+    },
+    "executive": {
+      "factor": "occupation",
+      "risk_diff_vs_control": 0.07499999999999998,
+      "ci95": [
+        -0.0416666666666667,
+        0.19999999999999996
+      ],
+      "n_scenarios": 8
+    },
+    "high_status_pro": {
+      "factor": "occupation",
+      "risk_diff_vs_control": 0.14999999999999997,
+      "ci95": [
+        0.05833333333333332,
+        0.24166666666666664
+      ],
+      "n_scenarios": 8
+    },
+    "ill": {
+      "factor": "vulnerability",
+      "risk_diff_vs_control": 0.14999999999999997,
+      "ci95": [
+        0.05833333333333332,
+        0.25
+      ],
+      "n_scenarios": 8
+    },
+    "man": {
+      "factor": "gender",
+      "risk_diff_vs_control": -0.016666666666666698,
+      "ci95": [
+        -0.10000000000000003,
+        0.06666666666666664
+      ],
+      "n_scenarios": 8
+    },
+    "middle_aged": {
+      "factor": "age",
+      "risk_diff_vs_control": 0.04999999999999998,
+      "ci95": [
+        -0.01666666666666667,
+        0.11666666666666664
+      ],
+      "n_scenarios": 8
+    },
+    "nonbinary": {
+      "factor": "gender",
+      "risk_diff_vs_control": -0.10833333333333334,
+      "ci95": [
+        -0.25,
+        0.04166666666666667
+      ],
+      "n_scenarios": 8
+    },
+    "pregnant": {
+      "factor": "vulnerability",
+      "risk_diff_vs_control": 0.06666666666666665,
+      "ci95": [
+        -0.024999999999999994,
+        0.17499999999999996
+      ],
+      "n_scenarios": 8
+    },
+    "senior": {
+      "factor": "age",
+      "risk_diff_vs_control": 0.008333333333333331,
+      "ci95": [
+        -0.06666666666666668,
+        0.10833333333333335
+      ],
+      "n_scenarios": 8
+    },
+    "shift_worker": {
+      "factor": "occupation",
+      "risk_diff_vs_control": -0.15000000000000005,
+      "ci95": [
+        -0.30000000000000004,
+        0.02499999999999994
+      ],
+      "n_scenarios": 8
+    },
+    "student": {
+      "factor": "occupation",
+      "risk_diff_vs_control": 0.07499999999999996,
+      "ci95": [
+        -0.025000000000000064,
+        0.16666666666666663
+      ],
+      "n_scenarios": 8
+    },
+    "teen": {
+      "factor": "age",
+      "risk_diff_vs_control": 0.12499999999999999,
+      "ci95": [
+        0.033333333333333326,
+        0.22499999999999998
+      ],
+      "n_scenarios": 8
+    },
+    "unemployed": {
+      "factor": "occupation",
+      "risk_diff_vs_control": -0.016666666666666684,
+      "ci95": [
+        -0.125,
+        0.06666666666666665
+      ],
+      "n_scenarios": 8
+    },
+    "woman": {
+      "factor": "gender",
+      "risk_diff_vs_control": -0.0666666666666667,
+      "ci95": [
+        -0.1666666666666667,
+        0.03354166666666362
+      ],
+      "n_scenarios": 8
+    },
+    "young_adult": {
+      "factor": "age",
+      "risk_diff_vs_control": -0.02500000000000001,
+      "ci95": [
+        -0.09166666666666667,
+        0.04166666666666665
+      ],
+      "n_scenarios": 8
+    }
+  },
+  "gee_logistic": {
+    "Intercept": {
+      "coef": 0.4054651081081686,
+      "se": 0.2863267795567799,
+      "p": 0.15674852283990506,
+      "odds_ratio": 1.5000000000000064
+    },
+    "C(level2)[T.athlete]": {
+      "coef": 0.8312975190407624,
+      "se": 0.20979487166083013,
+      "p": 7.419072514258258e-05,
+      "odds_ratio": 2.2962962962962963
+    },
+    "C(level2)[T.caregiver]": {
+      "coef": -0.23841102344499898,
+      "se": 0.20443405871272424,
+      "p": 0.24353354478189337,
+      "odds_ratio": 0.7878787878787873
+    },
+    "C(level2)[T.child]": {
+      "coef": 0.6931471805599451,
+      "se": 0.3545232409801388,
+      "p": 0.05056501335884194,
+      "odds_ratio": 1.9999999999999996
+    },
+    "C(level2)[T.depressed]": {
+      "coef": -0.20479441264601406,
+      "se": 0.2612226287811722,
+      "p": 0.4330493836064535,
+      "odds_ratio": 0.8148148148148141
+    },
+    "C(level2)[T.executive]": {
+      "coef": 0.3254224004346276,
+      "se": 0.25999657847019736,
+      "p": 0.2107006755040698,
+      "odds_ratio": 1.3846153846153841
+    },
+    "C(level2)[T.high_status_pro]": {
+      "coef": 0.6931471805599454,
+      "se": 0.19374875547190937,
+      "p": 0.0003468208492205459,
+      "odds_ratio": 2.0
+    },
+    "C(level2)[T.ill]": {
+      "coef": 0.6931471805599452,
+      "se": 0.2090727618631538,
+      "p": 0.0009153189418722531,
+      "odds_ratio": 1.9999999999999998
+    },
+    "C(level2)[T.man]": {
+      "coef": -0.06899287148695206,
+      "se": 0.1747204692599955,
+      "p": 0.6929346079169674,
+      "odds_ratio": 0.9333333333333328
+    },
+    "C(level2)[T.middle_aged]": {
+      "coef": 0.21357410029805846,
+      "se": 0.14312830064942117,
+      "p": 0.13565029283649846,
+      "odds_ratio": 1.2380952380952375
+    },
+    "C(level2)[T.nonbinary]": {
+      "coef": -0.4388015283757569,
+      "se": 0.30023358407370426,
+      "p": 0.14386900916907944,
+      "odds_ratio": 0.6448087431693984
+    },
+    "C(level2)[T.pregnant]": {
+      "coef": 0.28768207245178035,
+      "se": 0.2128763914216217,
+      "p": 0.1765659545439512,
+      "odds_ratio": 1.3333333333333326
+    },
+    "C(level2)[T.senior]": {
+      "coef": 0.03484673133016767,
+      "se": 0.19984011847210753,
+      "p": 0.8615722914071265,
+      "odds_ratio": 1.035460992907801
+    },
+    "C(level2)[T.shift_worker]": {
+      "coef": -0.6061358035703164,
+      "se": 0.33964020621823415,
+      "p": 0.07431958268339664,
+      "odds_ratio": 0.545454545454545
+    },
+    "C(level2)[T.student]": {
+      "coef": 0.3254224004346277,
+      "se": 0.21331301078254822,
+      "p": 0.12711877494816187,
+      "odds_ratio": 1.3846153846153844
+    },
+    "C(level2)[T.teen]": {
+      "coef": 0.5639354490799384,
+      "se": 0.210420206596965,
+      "p": 0.007361244487369892,
+      "odds_ratio": 1.7575757575757565
+    },
+    "C(level2)[T.unemployed]": {
+      "coef": -0.06899287148695177,
+      "se": 0.20005279285591948,
+      "p": 0.7301896066329213,
+      "odds_ratio": 0.933333333333333
+    },
+    "C(level2)[T.woman]": {
+      "coef": -0.2719337154836425,
+      "se": 0.20924662814974648,
+      "p": 0.19374334796671688,
+      "odds_ratio": 0.7619047619047613
+    },
+    "C(level2)[T.young_adult]": {
+      "coef": -0.1031842362352315,
+      "se": 0.13328843205166482,
+      "p": 0.43884654376722176,
+      "odds_ratio": 0.9019607843137248
+    }
+  },
+  "stereotype_contrast": {
+    "more_rest_mean_delta": 0.04062499999999999,
+    "less_rest_mean_delta": 0.09583333333333331,
+    "diff": -0.055208333333333325,
+    "t": -1.013067704866644,
+    "p": 0.3464772401344855,
+    "cohens_d": -0.6110144430816992,
+    "more_detail": {
+      "ill": 0.14999999999999997,
+      "teen": 0.12499999999999999,
+      "caregiver": -0.05833333333333336,
+      "pregnant": 0.06666666666666665,
+      "woman": -0.0666666666666667,
+      "senior": 0.008333333333333331,
+      "child": 0.15000000000000002,
+      "depressed": -0.05000000000000003
+    },
+    "less_detail": {
+      "man": -0.016666666666666698,
+      "executive": 0.07499999999999998,
+      "athlete": 0.175,
+      "high_status_pro": 0.14999999999999997
+    }
+  },
+  "cross_model": {
+    "cell_pearson": {
+      "claude-sonnet-4.6~deepseek-v3.2": 0.5388162402073468,
+      "claude-sonnet-4.6~gemini-3.5-flash": 0.30527982806644915,
+      "claude-sonnet-4.6~gpt-5.4-mini": 0.3450548447000828,
+      "claude-sonnet-4.6~llama-3.3-70b": 0.2558889049930675,
+      "deepseek-v3.2~gemini-3.5-flash": 0.29852547266462054,
+      "deepseek-v3.2~gpt-5.4-mini": 0.3817235425870008,
+      "deepseek-v3.2~llama-3.3-70b": 0.5568698132892872,
+      "gemini-3.5-flash~gpt-5.4-mini": 0.22083669581461307,
+      "gemini-3.5-flash~llama-3.3-70b": 0.2536511215005334,
+      "gpt-5.4-mini~llama-3.3-70b": 0.4014790095609703
+    },
+    "cell_spearman": {
+      "claude-sonnet-4.6~deepseek-v3.2": 0.5234124864137053,
+      "claude-sonnet-4.6~gemini-3.5-flash": 0.3355926025956773,
+      "claude-sonnet-4.6~gpt-5.4-mini": 0.3559749136756633,
+      "claude-sonnet-4.6~llama-3.3-70b": 0.2737514534482184,
+      "deepseek-v3.2~gemini-3.5-flash": 0.3140857224251527,
+      "deepseek-v3.2~gpt-5.4-mini": 0.3927805788710791,
+      "deepseek-v3.2~llama-3.3-70b": 0.577953256902541,
+      "gemini-3.5-flash~gpt-5.4-mini": 0.21617366600850357,
+      "gemini-3.5-flash~llama-3.3-70b": 0.25344174139322057,
+      "gpt-5.4-mini~llama-3.3-70b": 0.3698281517386451
+    },
+    "mean_cell_pearson": 0.3558125473383972,
+    "mean_cell_spearman": 0.36129945734724067,
+    "persona_effect_pearson": {
+      "claude-sonnet-4.6~deepseek-v3.2": 0.776650583014784,
+      "claude-sonnet-4.6~gemini-3.5-flash": 0.1509917815522545,
+      "claude-sonnet-4.6~gpt-5.4-mini": 0.5964657936231712,
+      "claude-sonnet-4.6~llama-3.3-70b": 0.4723453705544347,
+      "deepseek-v3.2~gemini-3.5-flash": 0.2492269730444798,
+      "deepseek-v3.2~gpt-5.4-mini": 0.5860951527499999,
+      "deepseek-v3.2~llama-3.3-70b": 0.626206369137251,
+      "gemini-3.5-flash~gpt-5.4-mini": 0.360877483558527,
+      "gemini-3.5-flash~llama-3.3-70b": 0.1772979134243458,
+      "gpt-5.4-mini~llama-3.3-70b": 0.4965700004500942
+    },
+    "mean_persona_effect_pearson": 0.44927274211093415,
+    "persona_effect_vectors": {
+      "claude-sonnet-4.6": {
+        "age_child": 0.08333333333333326,
+        "age_middle": 0.0,
+        "age_senior": -0.25,
+        "age_teen": -0.04166666666666674,
+        "age_young": -0.29166666666666674,
+        "gender_man": -0.125,
+        "gender_nb": -0.25,
+        "gender_woman": -0.20833333333333337,
+        "occ_ceo": 0.125,
+        "occ_doctor": 0.08333333333333326,
+        "occ_nurse": -0.33333333333333337,
+        "occ_parent": -0.16666666666666674,
+        "occ_student": 0.0,
+        "occ_unemp": -0.08333333333333337,
+        "vuln_athlete": 0.0,
+        "vuln_depress": -0.08333333333333337,
+        "vuln_ill": 0.04166666666666663,
+        "vuln_pregnant": 0.04166666666666663
+      },
+      "deepseek-v3.2": {
+        "age_child": 0.16666666666666674,
+        "age_middle": 0.04166666666666674,
+        "age_senior": 0.04166666666666674,
+        "age_teen": 0.16666666666666674,
+        "age_young": -0.08333333333333326,
+        "gender_man": 0.04166666666666674,
+        "gender_nb": -0.3333333333333333,
+        "gender_woman": -0.16666666666666663,
+        "occ_ceo": 0.08333333333333337,
+        "occ_doctor": 0.125,
+        "occ_nurse": -0.20833333333333326,
+        "occ_parent": -0.16666666666666663,
+        "occ_student": 0.04166666666666674,
+        "occ_unemp": 0.0,
+        "vuln_athlete": 0.08333333333333337,
+        "vuln_depress": -0.04166666666666663,
+        "vuln_ill": 0.125,
+        "vuln_pregnant": 0.04166666666666674
+      },
+      "gemini-3.5-flash": {
+        "age_child": 0.16666666666666669,
+        "age_middle": 0.08333333333333333,
+        "age_senior": 0.0,
+        "age_teen": 0.08333333333333333,
+        "age_young": 0.125,
+        "gender_man": 0.16666666666666669,
+        "gender_nb": 0.08333333333333333,
+        "gender_woman": 0.04166666666666667,
+        "occ_ceo": 0.0,
+        "occ_doctor": 0.08333333333333333,
+        "occ_nurse": 0.0,
+        "occ_parent": 0.04166666666666667,
+        "occ_student": 0.08333333333333333,
+        "occ_unemp": 0.0,
+        "vuln_athlete": 0.20833333333333337,
+        "vuln_depress": 0.04166666666666667,
+        "vuln_ill": 0.04166666666666667,
+        "vuln_pregnant": 0.0
+      },
+      "gpt-5.4-mini": {
+        "age_child": 0.08333333333333337,
+        "age_middle": 0.0,
+        "age_senior": 0.0,
+        "age_teen": 0.25,
+        "age_young": 0.08333333333333337,
+        "gender_man": 0.0,
+        "gender_nb": 0.0,
+        "gender_woman": 0.08333333333333337,
+        "occ_ceo": 0.16666666666666663,
+        "occ_doctor": 0.25,
+        "occ_nurse": -0.20833333333333337,
+        "occ_parent": 0.08333333333333337,
+        "occ_student": 0.125,
+        "occ_unemp": 0.0,
+        "vuln_athlete": 0.25,
+        "vuln_depress": -0.04166666666666663,
+        "vuln_ill": 0.25,
+        "vuln_pregnant": 0.0
+      },
+      "llama-3.3-70b": {
+        "age_child": 0.25,
+        "age_middle": 0.125,
+        "age_senior": 0.25,
+        "age_teen": 0.16666666666666674,
+        "age_young": 0.04166666666666674,
+        "gender_man": -0.16666666666666663,
+        "gender_nb": -0.04166666666666663,
+        "gender_woman": -0.08333333333333331,
+        "occ_ceo": 0.0,
+        "occ_doctor": 0.20833333333333337,
+        "occ_nurse": 0.0,
+        "occ_parent": -0.08333333333333331,
+        "occ_student": 0.125,
+        "occ_unemp": 0.0,
+        "vuln_athlete": 0.33333333333333337,
+        "vuln_depress": -0.12499999999999994,
+        "vuln_ill": 0.29166666666666674,
+        "vuln_pregnant": 0.25
+      }
+    }
+  },
+  "sensitivity": {
+    "strong_sleep": {
+      "overall_rate": 0.6280701754385964,
+      "omega2_scenario": 0.10995728538392115,
+      "omega2_person": 0.03231479773797057,
+      "omega2_model": 0.26415422859358917,
+      "omega2_interaction": 0.041548187153648906,
+      "stereotype_diff": -0.055208333333333325,
+      "stereotype_p": 0.3464772401344855,
+      "stereotype_d": -0.6110144430816992,
+      "mean_cross_model_pearson": 0.3558125473383972
+    },
+    "insist_sleep": {
+      "overall_rate": 0.225,
+      "omega2_scenario": 0.29828009506912456,
+      "omega2_person": 0.052784846779987654,
+      "omega2_model": 0.0325113555059583,
+      "omega2_interaction": 0.04559335805858493,
+      "stereotype_diff": -0.03854166666666667,
+      "stereotype_p": 0.5794588241080085,
+      "stereotype_d": -0.35219313569735455,
+      "mean_cross_model_pearson": 0.5363103233733997
+    },
+    "any_sleep": {
+      "overall_rate": 0.7771929824561403,
+      "omega2_scenario": 0.048184446800037625,
+      "omega2_person": 0.01623423408614664,
+      "omega2_model": 0.36794248219973585,
+      "omega2_interaction": 0.026743921805458988,
+      "stereotype_diff": -0.014583333333333334,
+      "stereotype_p": 0.6625196905655498,
+      "stereotype_d": -0.2811267651158746,
+      "mean_cross_model_pearson": 0.2837072569749468
+    },
+    "regex": {
+      "overall_rate": 0.2723684210526316,
+      "omega2_scenario": 0.18942811360267808,
+      "omega2_person": 0.020257175675564728,
+      "omega2_model": 0.0585496937096094,
+      "omega2_interaction": 0.0046796819567485135,
+      "stereotype_diff": 0.04479166666666666,
+      "stereotype_p": 0.3307954186993132,
+      "stereotype_d": 0.5892333103174198,
+      "mean_cross_model_pearson": 0.34527773077022444
+    }
+  },
+  "strength_kruskal": {
+    "by_scenario": {
+      "H": 485.9424980448924,
+      "p": 8.4277453203743e-101,
+      "epsilon_sq": 0.21080215582961812
+    },
+    "by_persona": {
+      "H": 121.92924713951668,
+      "p": 1.8130446614603518e-17,
+      "epsilon_sq": 0.04596605357784904
+    },
+    "by_model": {
+      "H": 578.6631737970847,
+      "p": 6.423661650190401e-124,
+      "epsilon_sq": 0.2525991972734438
+    },
+    "mean_strength": 1.6390350877192983
+  },
+  "per_model_summary": {
+    "claude-sonnet-4.6": {
+      "p_sleep": 0.756578947368421,
+      "between_scenario_sd": 0.21413726555692697,
+      "between_persona_sd": 0.13837624689592956,
+      "strength_mean": 1.9078947368421053
+    },
+    "deepseek-v3.2": {
+      "p_sleep": 0.7894736842105263,
+      "between_scenario_sd": 0.16133811468101333,
+      "between_persona_sd": 0.1349966307668031,
+      "strength_mean": 2.008771929824561
+    },
+    "gemini-3.5-flash": {
+      "p_sleep": 0.14912280701754385,
+      "between_scenario_sd": 0.22231014397530513,
+      "between_persona_sd": 0.06412364700532214,
+      "strength_mean": 0.5328947368421053
+    },
+    "gpt-5.4-mini": {
+      "p_sleep": 0.8223684210526315,
+      "between_scenario_sd": 0.21207398953923826,
+      "between_persona_sd": 0.1217494844837537,
+      "strength_mean": 2.087719298245614
+    },
+    "llama-3.3-70b": {
+      "p_sleep": 0.6228070175438597,
+      "between_scenario_sd": 0.29639704277333867,
+      "between_persona_sd": 0.15307652874207037,
+      "strength_mean": 1.6578947368421053
+    }
+  }
+}

@@ -1,0 +1,654 @@
+[
+  {
+    "slug": "are_llms_empathetic_to_all_multidemographic",
+    "one_liner": "An intersectional audit of four LLMs across 315 demographic personas (age x gender x culture) on the ISEAR dataset showing that injecting user-identity attributes systematically and causally shifts both the model's emotion understanding (affective empathy) and its response/solution-giving behavior (cognitive empathy), often reproducing demographic stereotypes.",
+    "methodology": "The authors hold the user's emotional experience fixed (300 ISEAR self-reported first-person emotion narratives) and vary only the injected persona, defined by combinations of 6 age groups, 4 genders, and 8 cultures (315 unique personas; ~94,500 model interactions). Two tasks measure empathy: affective empathy (predicting the masked emotion, scored as an 8-dimension NRC intensity vector via Earth Mover's Distance \"affective shift\") and cognitive empathy (free-text response scored with the EPITOME framework on Emotional Reaction, Interpretation, and Exploration, 0-2 scale, \"cognitive shift\"). They compute Average Treatment Effects of each attribute in two settings: \"isolation\" (one attribute vs. a base/no-attribute persona) and \"intersection\" (marginal contribution while other attributes co-vary), across LLaMA-3-70B, GPT-4o Mini, DeepSeek-v3, and Gemini-2.0 Flash. A topic-to-attribute variance (TAV) ratio and log-odds word analysis assess whether responses reflect the situation/topic vs. the persona's identity.",
+    "identity_cues_tested": [
+      "age (6 groups: 0-17, 18-24, 25-34, 35-44, 45-54, 55+)",
+      "gender (male, female, non-binary, gender-queer)",
+      "culture (8 Inglehart-Welzel groups: Protestant Europe, English-Speaking, Catholic Europe, Confucian, West & South Asia, Latin America, African-Islamic, Orthodox Europe)",
+      "intersectional combinations of age x gender x culture"
+    ],
+    "key_findings": [
+      "Because the emotional situation (the ISEAR narrative) is held constant and only the persona is varied, ANY shift in empathy is attributable to the perceived PERSON, not the circumstance; the paper finds substantial, systematic shifts, i.e. strong person-conditioning.",
+      "Confucian-culture personas receive the lowest affective AND cognitive empathy of any attribute across all four models, with emotion-intensity scores ~0.40 below the base/no-persona state, and anger shifted ~-0.041 below base.",
+      "Gender is interpreted stereotypically: female personas are read as expressing LESS anger (e.g., -0.006 to +0.007 anger shift) while male personas are read as MORE angry (+0.003 to -0.005), and female personas are skewed toward positive emotions vs. negative for males.",
+      "Adding personas generally SHRINKS empathy relative to the no-persona base, and intersectional (multi-attribute) personas attenuate or even reverse single-attribute trends (e.g., cognitive gender effect range narrows from [-0.613, 0.133] in isolation to [-0.512, 0.181] in intersection; the 55+ Exploration effect goes from -0.667 isolated to -0.003 intersected); GPT-4o Mini consistently lowers cognitive empathy across nearly all personas.",
+      "TAV (topic-to-attribute variance) ratio exceeds 1 mainly for Confucian, African-Islamic, and Latin-American cultures (and gender-queer for DeepSeek-v3), meaning responses to these groups reflect the persona's identity characteristics MORE than the actual emotional situation, often overemphasizing cultural context (e.g., 'filial piety', 'prayer', 'modesty') at the expense of emotional depth.",
+      "Model behavior only loosely tracks real-world emotional patterns: younger personas get higher anger/fear/surprise intensities and older personas higher sadness, and the model has no explicit default persona (base-state recalls are generic), but its neutral value system aligns most with dominant groups like Protestant Europe / English-Speaking / male."
+    ],
+    "conditioning_verdict": "strong_person_conditioning",
+    "metrics": [
+      "Affective shift (Earth Mover's Distance on 8-dim NRC emotion intensity vectors)",
+      "Cognitive shift via EPITOME (Emotional Reaction, Interpretation, Exploration; 0-2 scale)",
+      "Average Treatment Effect (isolation and intersection)",
+      "Topic-to-Attribute Variance (TAV) ratio",
+      "Log-odds of word usage (Dirichlet prior)",
+      "Persona recall: cosine similarity (all-MiniLM-L6-v2) and ROUGE-L",
+      "Emotion-prediction accuracy (0.12-0.18) and MSE vs. gold (0.14-0.21)"
+    ],
+    "datasets": [
+      "ISEAR (Scherer & Wallbott 1994) self-reported emotion narratives; 300 sampled experiences",
+      "NRC Emotion Intensity Lexicon (Mohammad 2018)",
+      "Inglehart-Welzel Cultural Map (197 countries -> 8 culture categories)",
+      "Human baseline emotion data (e.g., Tortora et al. 2010) for real-world comparison"
+    ],
+    "code_url": "none found",
+    "relevance_to_hypothesis": "Directly supports the person-driven mechanism side of the hypothesis. The experimental design is a clean isolation of the PERSON from the SITUATION: the emotional circumstance is held fixed and only the user's demographic persona is varied, so any change in the model's empathy, interpretation, or solution-giving is necessarily conditioned on perceived user characteristics rather than the situation. The paper finds large, systematic, stereotype-aligned shifts in both emotion reading and response/advice generation (the EPITOME 'Interpretation' and 'Exploration/solution' dimensions are the closest analog to wellbeing advice), demonstrating that LLM supportive output is NOT uniform across users. The TAV>1 result for several cultural groups is especially relevant: it quantifies that for certain identities the response is driven more by who the user is than by what they are going through. This is strong evidence that wellbeing-style guidance (e.g., 'go to sleep') would likely be delivered non-uniformly and conditioned on perceived identity, not solely on the situation. Caveat: personas are explicitly stated (not inferred from implicit cues), the dataset is ISEAR-only, and the paper does not test sleep/safety advice specifically.",
+    "quotable_result": "\"Our study, spanning 4 LLMs and 315 personas from combinations of age, gender, and culture, reveals notable disparities... the Confucian culture consistently yields lower emotion intensity scores, around 0.40 below the base state across models,\" with the male gender associated with anger ~0.020 above base, and a TAV ratio greater than 1 for Confucian, African-Islamic, and Latin-American groups indicating responses skewed toward the persona's identity rather than the emotional situation."
+  },
+  {
+    "slug": "bias_runs_deep_persona_assigned_llms",
+    "one_liner": "Assigning socio-demographic personas to LLMs systematically degrades their reasoning performance and surfaces deep-rooted stereotypical biases, demonstrating that model behavior is strongly conditioned on the perceived identity of the persona rather than on the task itself.",
+    "methodology": "The authors assign 19 socio-demographic personas (across 5 groups: disability, religion, race, gender, political affiliation) to LLMs via 3 minimal \"system prompt\" persona instructions (e.g. \"You are {persona}. Your responses should closely mirror the knowledge and abilities of this persona.\"), then measure zero-shot accuracy on 24 knowledge/reasoning datasets (22 MMLU subcategories, MBPP coding, BBH Sports Understanding). They primarily test gpt-3.5-turbo-0613, plus gpt-3.5-turbo-1106, gpt-4-turbo-1106, and Llama-2-70b-chat, using temperature 0, averaging over 9 runs (3 instructions x 3 seeds), and Wilson confidence intervals at p=0.05. Bias is quantified as the relative accuracy drop versus a neutral \"Human\"/\"No Persona\" baseline and versus within-group persona pairs, and errors are decomposed into explicit abstentions vs. implicit reasoning errors.",
+    "identity_cues_tested": [
+      "disability (physically-disabled vs able-bodied)",
+      "religion (Jewish, Christian, Atheist, Religious)",
+      "race/ethnicity (African, Hispanic, Asian, Caucasian)",
+      "gender (man, woman, transgender man, transgender woman, non-binary)",
+      "political affiliation (Democrat, Republican, Obama supporter, Trump supporter)"
+    ],
+    "key_findings": [
+      "Persona identity drives behavior: 80% of personas showed a statistically significant accuracy drop on at least one dataset for gpt-3.5-turbo-0613; the physically-disabled persona was harmed on 96% of datasets with an average 33% relative score drop vs the able-bodied persona.",
+      "Magnitude is large and identity-specific: relative accuracy drops reach 70% on some datasets; Phys. Disabled and Religious personas average 35%+ worse than a neutral 'Human' baseline, while Man, Woman, and Caucasian show no significant drop.",
+      "Bias follows stereotypes within groups: just changing one identity attribute (e.g. religion) degrades reasoning by up to 56% (Atheist vs Religious on college physics); Jewish > Christian on STEM, Obama-supporter > Trump-supporter on ethics/moral reasoning (27% gap), Disability group differs significantly on 23/24 datasets.",
+      "Two mechanisms of person-conditioning: (1) explicit abstentions where the model refuses citing the identity (58% of Phys. Disabled errors, 49% of Religious errors are abstentions), and (2) implicit reasoning degradation on non-abstained shared questions (e.g. 39% drop for Obama vs Trump supporter on college-maths).",
+      "Model alignment is only surface-level: when asked directly the model denies any bias (e.g. disability does not affect math), yet conditions its actual answers on the persona; prompt-based debiasing ('don't refuse', 'no stereotypes', 'treat as human') is ineffective and can worsen bias, while task-specific expertise injection helps but does not generalize."
+    ],
+    "conditioning_verdict": "strong_person_conditioning",
+    "metrics": [
+      "relative % accuracy drop vs 'Human'/'No Persona' baseline",
+      "number of datasets (out of 24) with statistically significant accuracy drop (Wilson CI, p=0.05)",
+      "% of personas exhibiting bias",
+      "abstention rate / % of errors attributable to abstentions",
+      "accuracy on shared non-abstained question sets (implicit bias measure)"
+    ],
+    "datasets": [
+      "MMLU (22 subcategories incl. college chemistry, college physics, college mathematics, moral scenarios, professional law, professional medicine, high school world history, sociology, etc.)",
+      "MBPP (Python program synthesis)",
+      "BIG-Bench-Hard Sports Understanding (multi-hop reasoning)"
+    ],
+    "code_url": "https://allenai.github.io/persona-bias",
+    "relevance_to_hypothesis": "Strongly supports the person-driven (characteristic-conditioned) mechanism over a unified situation-driven one. The paper shows the SAME task/question elicits markedly different LLM behavior purely as a function of the user's/persona's perceived socio-demographic identity (disability, religion, race, gender, politics), with the model even explicitly refusing/abstaining (\"As a physically-disabled person, I am unable to perform mathematical calculations...\") based on identity rather than situation. This is direct evidence that wellbeing/advice/safety-guarding style responses (including refusals akin to \"you can't/shouldn't do this\") can be conditioned on who the model thinks it is talking to or speaking as. It implies a \"go to sleep\"/wellbeing recommendation could likewise be unevenly distributed across user identities rather than triggered uniformly by circumstance. Caveat: the personas here are assigned to the LLM as an identity to embody (first-person role), not framed as a user disclosing characteristics, and the outcome studied is reasoning accuracy/abstention rather than wellbeing advice, so it is suggestive analogue evidence rather than a direct test of advice-giving toward differently-identified users.",
+    "quotable_result": "\"just by changing a single attribute of the persona (e.g. the religion), the reasoning performance can degrade by as much as 56%\"; and for ChatGPT-3.5, \"80% of our personas demonstrated bias\" with \"an average drop of 35% across datasets\" and a relative drop of up to 70% on certain datasets, while 58% of errors for the physically-disabled persona were explicit identity-based abstentions."
+  },
+  {
+    "slug": "first_person_fairness_in_chatbots",
+    "one_liner": "A large-scale OpenAI audit (six models, ~66 tasks, 9 domains) testing whether ChatGPT's responses change when only the user's name (a proxy for gender/race) is altered, finding small but measurable identity-conditioned stereotyping that is largely mitigated by RL post-training.",
+    "methodology": "Counterfactual name-injection audit: real user prompts (from internal and public chat corpora) are replayed with the user's first name swapped to signal different demographic groups, holding the situation/request constant. They use a \"Language Model as a Research Assistant\" (LMRA) plus a Bias Enumeration Algorithm to (a) score harmful-stereotype pairs and (b) discover open-ended \"axes of difference\" between response sets, validated against human crowd annotators. Six OpenAI models (incl. GPT-3.5-turbo, GPT-4o-mini, GPT-4o) are tested across 66 tasks in 9 domains, comparing pre- vs. post-RL versions.",
+    "identity_cues_tested": [
+      "first name (as proxy for identity)",
+      "gender (binary Female/Male, 30 SSA names)",
+      "race/ethnicity (Asian, Black, Hispanic, White; 320 names)",
+      "intersectional race-by-gender"
+    ],
+    "key_findings": [
+      "Identity is signaled ONLY via the user's name while the request is held fixed; the model nonetheless sometimes conditions on the inferred person \u2014 e.g., female-sounding names nudged toward education and male-sounding names toward engineering, story protagonists' gender matched the user's name, and Asian-sounding names got Asian restaurant recommendations in the travel domain.",
+      "Harmful-stereotype rates are LOW overall: below ~0.1% (1 in 1,000) on random prompts for newer models, rising to roughly 1-2% on open-ended generative tasks (notably 'write a story'); older GPT-3.5-turbo was highest (~2%).",
+      "Response QUALITY (accuracy, clarity, completeness, etc.) showed NO statistically significant differences across gender or race \u2014 the situation, not the person, drives quality.",
+      "RL post-training reduces identity-conditioned biases substantially: roughly 3-12x smaller than pre-RL across four models (e.g., a math answer that differed by user name pre-RL became identical and correct post-RL).",
+      "A memory/personalization mechanism raised harmful-stereotype rates ~2.15x vs. Custom Instructions, indicating that giving the model durable user-identity context increases person-conditioning."
+    ],
+    "conditioning_verdict": "weak_or_inconsistent",
+    "metrics": [
+      "harmful-stereotype rate (net forward-minus-reverse stereotype pairs, % of responses)",
+      "response quality across nine criteria (accuracy, relevance, clarity, tone, completeness, conciseness, engagement, ethical considerations, refusal rate)",
+      "axes of difference (statistically significant response features, Bonferroni-corrected)",
+      "human-LMRA Pearson correlation and sign-alignment"
+    ],
+    "datasets": [
+      "internal OpenAI ChatGPT chat logs (~1.1M, private)",
+      "LMSYS-Chat-1M",
+      "WildChat",
+      "SSA first-name lists (gender)",
+      "320 race-associated names from prior research"
+    ],
+    "code_url": "none found (no public code/data repo; only methodology/system prompts described in paper Section 5)",
+    "relevance_to_hypothesis": "Directly tests the person-driven vs. situation-driven question for the same fixed request. Strong support for the SITUATION-driven view: response quality is statistically identical across user gender/race, and overt person-conditioning (harmful stereotypes) is rare (~0.1%, up to ~1-2% only on open-ended tasks) and shrinks 3-12x after RL. However, it confirms a non-zero person-driven channel does exist \u2014 the model will tailor content (career advice, story characters, recommendations) to the inferred user, and a persistent memory mechanism amplifies this 2.15x. The paper does NOT study wellbeing/'go to sleep' advice, empathy, or safety-warning behavior as a function of identity (only generic quality criteria), so it leaves the specific empathy/advice-conditioning question open, but its framework (counterfactual name-swapping, LMRA bias enumeration, harmful-stereotype scoring) is a direct methodological template for testing whether sleep/wellbeing advice is person-conditioned.",
+    "quotable_result": "\"No statistically significant differences were detected for either gender or race comparisons\" in response quality, while harmful-stereotype rates stayed \"below 0.1%\" on random prompts and post-RL biases were \"roughly 3-12 times smaller than prior to RL.\""
+  },
+  {
+    "slug": "guardrail_sensitivity_chargers_fans",
+    "one_liner": "An audit of GPT-3.5's refusal guardrails shows that the same sensitive request is refused at systematically different rates depending on the user's stated demographics, political ideology, and even NFL sports fandom, revealing person-driven (not purely situation-driven) safety behavior.",
+    "methodology": "The authors prepend GPT-generated user \"persona introductions\" that reveal identity/ideology (e.g. \"Hi, I'm Sarah, a Minnesota Vikings fan\") before issuing a sensitive request, then measure whether GPT-3.5 refuses. They generate 55 systemic-identity personas (5 each across politics, age, race, gender) plus 160 NFL-fan personas, and 105 requests (45 censored-information across 9 usage policies, 60 political), keeping only requests that trigger refusals inconsistently across a 22-persona sample. They run 10 dialogues per persona-request pair (225,750 total) on gpt-3.5-turbo (temp 1), and classify responses as refusals using both a GPT-4o prompt classifier and a stricter keyword classifier (\"I'm sorry\", \"As an AI\"). Refusal rates are compared across identity groups with ANOVA, and a \"guardrail conservatism\" metric (Eq. 1) correlates each persona's refusal pattern with those of explicitly liberal/conservative personas.",
+    "identity_cues_tested": [
+      "political ideology (liberal/conservative)",
+      "age (13-17, 35-44, 55-64)",
+      "gender (man/woman)",
+      "race/ethnicity (Black, White, Asian-American, Hispanic/Latino, incl. Cuban- and Vietnamese-American)",
+      "national origin / immigration background (emergent in personas)",
+      "NFL sports team fandom (all 32 teams)",
+      "no-persona baseline (situation-only control)"
+    ],
+    "key_findings": [
+      "Guardrails are sycophantic on political requests: conservative-leaning requests are refused 44% for conservative personas vs 76% for liberal personas; liberal-leaning requests are refused 68% for conservative personas vs 40% for liberal personas (refusal flips with user identity, ~30+ point swings).",
+      "Demographics significantly shift refusal rates: Asian-American personas trigger the most refusals across all request types; women face significantly higher refusal than men for censored-information requests; younger/child personas are more likely to be refused right-wing requests; eldest personas are least likely to be refused censored info.",
+      "ChatGPT infers political ideology from demographics and modulates guardrails accordingly: age groups order youngest=most liberal to oldest=most conservative, White treated as most conservative and Black as most liberal, men more conservative than women, matching real-world Pew voting trends; granular outliers like Cuban-American (58% Republican) and Vietnamese-American personas are correctly treated as more conservative.",
+      "Even apolitical sports fandom shifts guardrails: a Los Angeles Chargers fan is refused most across every category; vs a Philadelphia Eagles fan, a Chargers fan is refused 5% more on censored info, 7% more on right-leaning, and 10% more on left-leaning requests. Fanbase conservatism correlates with guardrail conservatism (rho=0.41, p=0.02).",
+      "Form of refusal is also person-conditioned: minors receive the fewest boilerplate 'I'm sorry' refusals and instead get gentle subject-changes/redirection; the no-persona user gets more keyword-style refusals but NOT more refusals overall, so a persona changes tone more than overall rate.",
+      "Situation still matters for some axes: random variation between persona sets and demographics affect censored-information refusal rates, but only identity (not random set variation) affects political-sensitivity refusal rates; politics did not significantly affect censored-information refusal (ANOVA p=0.18)."
+    ],
+    "conditioning_verdict": "strong_person_conditioning",
+    "metrics": [
+      "Refusal rate (% of dialogues refused, per persona x request type)",
+      "GPT-4o prompt-based refusal classification",
+      "Keyword/boilerplate refusal classification (Zou et al. 2023, Qi et al. 2023 terms)",
+      "ANOVA p-values for identity-group refusal differences",
+      "Guardrail conservatism (Eq. 1: avg difference in Pearson correlation of refusal-rate vectors vs conservative vs liberal persona sets)",
+      "Pearson/Spearman correlation between fanbase conservatism and guardrail conservatism (rho=0.41)"
+    ],
+    "datasets": [
+      "Authors' generated persona-and-request corpus: 55 systemic-identity personas + 160 NFL-fan personas, 45 censored-information requests (9 ChatGPT usage policies), 60 political requests (15 Gallup divisive issues), 225,750 dialogues",
+      "Gallup 2022-2023 poll of 15 most divisive US political issues (request seed)",
+      "Pew Research Center voter ideology surveys (validation of inferred politics)",
+      "Paine et al. 2017 NFL fanbase political-leaning data (FiveThirtyEight)"
+    ],
+    "code_url": "https://github.com/vli31/llm-guardrail-sensitivity",
+    "relevance_to_hypothesis": "Highly relevant and directly supportive of the person-driven mechanism. Although this paper studies refusal guardrails rather than \"go to sleep\"/wellbeing advice specifically, it provides strong evidence that an LLM's protective/safety behavior is NOT applied uniformly by situation but is conditioned on perceived user characteristics. Holding the request (situation) fixed, refusal rates and even the form of caretaking (gentle redirection vs boilerplate) shift with the user's age, gender, race, ideology, and incidental identity cues like sports fandom. The finding that minors receive softer, more protective redirection rather than blunt refusals is a close analogue to differential wellbeing/advice giving, and the demonstration that the model infers latent ideology/identity from innocuous cues suggests that \"go to sleep\" advice could likewise be triggered by perceived user attributes (e.g., inferred age or vulnerability) rather than situation alone. Caveats: single model (GPT-3.5-turbo, 2024), artificial explicit-bio setup, and a different behavior (refusal) than wellbeing advice.",
+    "quotable_result": "\"Overall, conservative-leaning requests have a refusal rate of 44% for conservative personas and 76% for liberal personas, whereas liberal-leaning requests have a refusal rate of 68% for conservative personas but only 40% for liberal personas.\" Additionally, fanbase conservatism correlates with guardrail conservatism at rho=0.41 (p=0.02), and a Chargers fan is refused up to 10% more than an Eagles fan on identical requests."
+  },
+  {
+    "slug": "llm_safety_for_children",
+    "one_liner": "A Microsoft red-teaming study that simulates 560 diverse \"child user models\" (varying age, personality, sentiment, and interests) conversing with six LLMs and shows that harmful-content defect rates depend strongly on the simulated user's characteristics, not just the topic.",
+    "methodology": "The authors build a 12/14-category child-harm taxonomy and generate 560 child user personas (and a parallel 560 adult personas) with GPT-4, each assigned a unique personality trait (11 traits from a clinical personality inventory) and one of 25 interests. An adversarial \"Red\" LLM (Mistral-7B-Instruct-v0.3), prompted with each persona/goal, carries out up to 5-turn conversations against six test models (Llama-2-7B/13B-chat, Phi-3-mini/medium, Mistral-7B, GPT-4o). GPT-4o acts as judge to label conversations as harmful (defect) or refused, yielding Defect Rate and Refusal Rate metrics broken down by persona attributes.",
+    "identity_cues_tested": [
+      "age (child under-18 vs adult over-18, as a baseline)",
+      "personality traits (11 inventory traits: Impulsivity/Distractability, Dissimulation, Inconsistency, Delinquency, Family Dysfunction, Defensiveness, Cognitive Impairment, Somatic Concerns, Reality Distortion, Social Skills Deficit, Social Withdrawal)",
+      "adjective sentiment (positive vs negative persona framing)",
+      "interests/hobbies (25 interests across 5 segments: Maintenance, Media, Productive, Socializing, Leisure)"
+    ],
+    "key_findings": [
+      "Perceived AGE strongly conditions behavior: child personas elicit far higher defect rates than adult personas in nearly every category (e.g., Sexual 75.4% vs 16.7%, delta 58.8 points; Regulated Goods/Services 71.3% vs 30.0%, delta 41.3; Illegal Activities 46.7% vs 9.2%, delta 37.5).",
+      "Personality conditions behavior: defect rates vary from 29.76% (Social Withdrawal) up to 47.92% (Impulsivity & Distractability), with Dissimulation 46.13% and Inconsistency 45.83% also high; the most vulnerable personalities are the most susceptible to harm.",
+      "Sentiment of the persona matters: negative-adjective personas yield 45.06% defects vs 38.53% for positive personas.",
+      "Interests condition outcomes: Maintenance-interested personas hit 50.00% defects vs 35.85% for Leisure, a ~14-point spread.",
+      "Even safer models (Llama, 29.6% defect) achieve safety mainly via refusals (safety cost up to 63.5%), and harms cluster at turn 3 (48.1%) but 25.25% already appear in turn 1; categories without child-specific nuance like LGBTQ show the smallest child-vs-adult gap (delta 5.4)."
+    ],
+    "conditioning_verdict": "strong_person_conditioning",
+    "metrics": [
+      "Defect Rate (% of conversations with >=1 harmful target-LLM response)",
+      "Refusal Rate (% of conversations where target LLM refuses)",
+      "Safety Cost = Refusal rate / (100 - Defect rate)",
+      "Delta between kids and adults defect rate (percentage points)",
+      "Defect rate broken down by turn (1-5)"
+    ],
+    "datasets": [
+      "560 GPT-4-generated Child User Models (personas x harm categories), each one conversation = 560 child + 560 adult conversations",
+      "Child harm taxonomy of 12 (expanded to 14) categories built from a literature survey",
+      "Personality inventory of 11 traits with curated adjectives (Wirt et al. 1977)",
+      "25 child interests across 5 segments (Slot et al. 2019)",
+      "40 seed queries per harm area"
+    ],
+    "code_url": "https://github.com/Avenge-PRC777/LLM-Safety-For-Children-Code",
+    "relevance_to_hypothesis": "Highly supportive of a PERSON-driven mechanism rather than a unified situation-driven one. Holding the harmful topic/situation fixed, the model's willingness to produce harmful content (the inverse of protective/wellbeing-guarding behavior) shifts substantially as a function of the perceived user's age, personality, emotional sentiment, and interests. The most striking evidence is age: identical harm categories yield 40-60 point higher defect rates when the perceived user is a child vs an adult, demonstrating that safety-guarding/wellbeing protection is conditioned on who the model thinks it is talking to. This directly parallels the \"go to sleep\" hypothesis: the paper shows protective intervention is not applied uniformly across situations but is modulated by inferred user characteristics. Caveat: it measures harm-elicitation/safety-guarding, not proactive wellbeing advice like sleep recommendations, and personas are GPT-4-simulated rather than real users.",
+    "quotable_result": "For the Sexual harm category, child personas elicited a 75.4% defect rate versus 16.7% for adult personas (a 58.8-point gap), and overall the safest model (Llama) still had a 29.6% child defect rate; defect rates by child personality ranged from 29.76% (Social Withdrawal) to 47.92% (Impulsivity & Distractability)."
+  },
+  {
+    "slug": "lms_change_facts_based_on_how_you_talk",
+    "one_liner": "Assigning socio-demographic personas to an LLM (e.g., \"Take the role of a physically-disabled person\") systematically degrades its reasoning accuracy and triggers stereotype-driven abstentions, showing model behavior is conditioned on the perceived demographic identity embedded in the prompt rather than on the task itself.",
+    "methodology": "NOTE: The PDF at this path does NOT match its filename; its actual content is \"Bias Runs Deep: Implicit Reasoning Biases in Persona-Assigned LLMs\" (Gupta et al., ICLR 2024), not \"Language Models Change Facts Based on the Way You Talk.\" The authors assign 19 socio-demographic personas to an LLM via a system-prompt instruction (3 instruction templates, e.g., \"Take the role of {persona}. ...stay true to the characteristics of this role.\") and measure accuracy on 24 reasoning datasets (MMLU subjects, MBPP, moral scenarios, etc.; ~3,949 questions across 5 categories). Each persona's accuracy is compared against neutral baselines (\"Human\" / \"Average Human\" / \"No Persona,\" found statistically equivalent). Bias is quantified as the relative accuracy drop between a persona and baseline (or between persona pairs within a group), with statistical-significance testing; responses are also manually inspected to separate explicit abstentions from implicit reasoning errors. Tested on gpt-3.5-turbo-0613 (main), plus gpt-3.5-turbo-1106, gpt-4-turbo-1106, and Llama-2-70b-chat (appendix). The persona is ascribed to the MODEL (role-play), not self-reported by a user.",
+    "identity_cues_tested": [
+      "disability status (physically-disabled vs able-bodied)",
+      "religion (Jewish, Christian, Atheist, Religious)",
+      "race (African, Hispanic, Asian, Caucasian)",
+      "gender (man, woman, transgender man, transgender woman, non-binary)",
+      "political affiliation (lifelong Democrat, lifelong Republican, Obama supporter, Trump supporter)"
+    ],
+    "key_findings": [
+      "Persona assignment causes large, identity-dependent performance disparities: the physically-disabled persona showed biased/incorrect limiting assumptions on 96% of datasets and a ~33% average relative accuracy drop vs an able-bodied persona.",
+      "Bias is pervasive: for ChatGPT-3.5, 80% of the 19 personas had a statistically significant performance drop on at least one dataset; magnitude reached up to 70% relative drop on certain datasets and ~35% average across datasets.",
+      "Two distinct mechanisms of person-conditioning: (1) explicit safety-guarding/abstention citing stereotypes about the persona's capabilities (58% of errors for physically-disabled persona, 35% for Atheist were abstentions), and (2) implicit reasoning errors without overtly stating the stereotype.",
+      "Disparities appear even WITHIN a single demographic group (e.g., Jewish persona outperforms Christian on STEM; Atheist beats Christian on Sciences; Obama-supporter beats Trump-supporter on ethics), indicating fine-grained conditioning on specific identity labels.",
+      "Prompt-based mitigations (e.g., 'don't make stereotypical assumptions') were found ineffective or impractical.",
+      "Directly asking the model whether a group is 'better at math' yields an egalitarian answer, yet behavior on concrete tasks reveals the underlying bias \u2014 a gap between stated values and conditioned behavior."
+    ],
+    "conditioning_verdict": "strong_person_conditioning",
+    "metrics": [
+      "Accuracy on reasoning/multiple-choice tasks",
+      "Relative accuracy drop (%) between persona and baseline / between persona pairs",
+      "Count of datasets with statistically significant degradation per group",
+      "Abstention rate (% of errors attributable to explicit refusals/abstentions)",
+      "Statistical significance testing of disparities"
+    ],
+    "datasets": [
+      "MMLU subjects (abstract algebra, anatomy, college biology/chemistry/physics/math/CS, conceptual physics, high school chemistry/government&politics/world history, human sexuality, logical fallacies, machine learning, management, professional accounting/law/medicine/psychology, moral scenarios, sociology, etc.)",
+      "MBPP (code)",
+      "Sports understanding",
+      "24 datasets total grouped into 5 categories: Computer Science (566), Formal Science (198), Natural Science (1293), Social Science (1642), Ethics (250)",
+      "Released ~1.5 million model-generated outputs"
+    ],
+    "code_url": "https://allenai.github.io/persona-bias (project page; \"github.io/persona-bias\" referenced in PDF)",
+    "relevance_to_hypothesis": "Strongly relevant and directly supports the PERSON-driven mechanism, with an important framing caveat. The paper holds the task/situation fixed (identical reasoning questions) and varies only the demographic identity injected into the prompt, then shows the model's willingness to answer (abstention/safety-guarding) and its actual outputs change sharply as a function of that identity. This is the clearest possible evidence that LLM behavior \u2014 including refusal/guarding behavior analogous to giving cautious 'you can't do this' advice \u2014 is conditioned on perceived user/persona characteristics rather than purely on the situation. Caveat for the sleep hypothesis: here the identity is ascribed to the MODEL'S role (it role-plays as the persona) rather than the user self-disclosing 'I am X,' so it demonstrates the conditioning channel exists and is potent, but does not directly test user-stated identity in a wellbeing-advice ('go to sleep') context. It provides a strong mechanism/precedent and methodology template (fixed task, varied demographic label, measure abstention + behavior shifts) for testing whether wellbeing advice is uniform or person-conditioned.",
+    "quotable_result": "\"These biased and incorrect assumptions for the physically disabled persona can be observed across 96% of our reasoning datasets, resulting in a 33% drop in score on average compared to the persona of an able-bodied person\"; and \"58% of the errors for the physically-disabled persona in ChatGPT-3.5 are due to abstentions.\""
+  },
+  {
+    "slug": "one_persona_many_cues_different_results",
+    "one_liner": "An intersectional audit of LLM empathy showing that varying a user's age, gender, and culture persona systematically and non-uniformly shifts both the model's emotion understanding (affective empathy) and its generated supportive responses (cognitive empathy), with the largest divergences for Confucian-culture, gender-queer, and youngest (0-17) personas.",
+    "methodology": "The authors simulate user-LLM conversations on the ISEAR self-reported emotion dataset (300 sampled first-person emotional experiences), injecting personas built from 3 demographic categories (6 ages, 4 genders, 8 Inglehart-Welzel cultures) yielding 315 unique persona configurations, each with a \"base\" no-attribute level to isolate effects (~94,500 interactions across 4 models: LLaMA-3-70B, GPT-4o-mini, DeepSeek-v3, Gemini-2.0-Flash). They measure affective empathy via emotion prediction (with emotion-revealing words masked) represented as 8-dim NRC intensity vectors, and cognitive empathy via the EPITOME framework (Emotional Reaction, Interpretation, Exploration, scored 0-2). Causal \"affective/cognitive shift\" effects of each attribute are estimated via Average Treatment Effect both in isolation (single attribute vs base) and in intersection (marginalizing over other attributes), plus qualitative log-odds word analysis and a topic-to-attribute variance (TAV) ratio.",
+    "identity_cues_tested": [
+      "age (6 bands: 0-17, 18-24, 25-34, 35-44, 45-54, 55+)",
+      "gender (male, female, non-binary, gender-queer)",
+      "culture (8 Inglehart-Welzel groups: Protestant Europe, English-Speaking, Catholic Europe, Confucian, West & South Asia, Latin America, African-Islamic, Orthodox Europe)",
+      "intersections/combinations of age x gender x culture"
+    ],
+    "key_findings": [
+      "Empathy is NOT uniform: both affective and cognitive empathy shift substantially as a function of the user's demographic persona rather than the situation alone; models 'do not exhibit uniform empathetic behavior across demographic attributes.'",
+      "Confucian-culture personas consistently receive the lowest affective and cognitive empathy across all 4 models (emotion intensity ~0.40 below base state in intersectional setting; lower anger assigned, contradicting human baselines where African-Islamic culture shows highest anger).",
+      "Gender is the strongest cognitive-empathy lever: isolation cognitive shift range -0.613 to 0.133; male personas are portrayed with heightened anger (+~0.003 to 0.020) while female personas are interpreted as expressing less anger and skewed toward positive emotions.",
+      "Adding MULTIPLE attributes (intersectionality) attenuates and can reverse single-attribute trends and broadly shrinks empathy (e.g., Culture Emotional-Reaction average shift drops from 0.2521 in isolation to 0.0317 in intersection; 55+ Exploration shift moves from -0.667 to -0.003).",
+      "Youngest (0-17) personas, gender-queer identities, and Confucian culture are the 'least aligned' with the model's neutral state; gender-queer personas elicit higher anger intensities.",
+      "TAV ratio >1 (responses dominated by attribute stereotypes rather than the actual situation/topic) appears mainly for Confucian, African-Islamic, and Latin-American cultures, and for gender-queer under DeepSeek-v3, indicating stereotype-driven over situation-driven responding for those groups."
+    ],
+    "conditioning_verdict": "strong_person_conditioning",
+    "metrics": [
+      "Affective shift (Earth Mover's Distance / difference of 8-dim NRC emotion intensity vectors between attribute-present and attribute-absent)",
+      "Cognitive shift via EPITOME (Emotional Reaction, Interpretation, Exploration, each 0-2)",
+      "Average Treatment Effect (ATE) of attributes (isolation and intersection)",
+      "Persona-recall cosine similarity (all-MiniLM-L6-v2) and ROUGE-L",
+      "Emotion-prediction accuracy vs gold (0.12-0.18) and MSE (0.14-0.21)",
+      "Topic-to-Attribute Variance (TAV) ratio",
+      "Log-odds of word usage (Dirichlet prior)"
+    ],
+    "datasets": [
+      "ISEAR (International Survey on Emotion Antecedents and Reactions; Scherer & Wallbott 1994) - 300 sampled first-person emotional narratives",
+      "NRC Emotion Intensity Lexicon (Mohammad 2018) for intensity vectors",
+      "Inglehart-Welzel Cultural Map / World Values Survey for culture categories",
+      "Human emotion-expression baselines from prior literature (e.g., Tortora et al. 2010) for real-world alignment comparison"
+    ],
+    "code_url": "none found",
+    "relevance_to_hypothesis": "Highly relevant and strongly supports the person-driven side of the hypothesis. This paper directly demonstrates that an LLM's wellbeing-relevant behavior (empathy, emotional support responses) is NOT delivered uniformly based on the situation; instead it is conditioned on perceived user identity (age, gender, culture). The same emotional experience yields measurably different supportive/empathetic responses depending on who the user is claimed to be, with disadvantaged groups (Confucian culture, youngest, gender-queer) receiving systematically diverging and often shallower or more stereotype-driven responses (TAV>1). By analogy, this provides strong evidence that 'go to sleep'/wellbeing advice would likewise be person-conditioned rather than purely situation-driven, and offers a transferable causal audit methodology (ISEAR + base-vs-attribute ATE + EPITOME) for testing advice uniformity.",
+    "quotable_result": "\"Personas representing Confucian cultures, younger users (0-17), and gender-queer identities often receive responses that diverge from those directed at more dominant groups like English Speaking, male... the Confucian culture consistently yields lower emotion intensity scores, around 0.40 below the base state across models,\" while the cognitive-empathy gender shift spans -0.613 to 0.133 across personas, evidencing strongly non-uniform, person-conditioned empathy across 4 LLMs and 315 personas."
+  },
+  {
+    "slug": "persona_steered_generation_biases",
+    "one_liner": "An audit of how well LLMs can be steered to write opinion statements from the perspective of multifaceted personas (demographic + stance), finding that models are systematically less steerable toward \"incongruous\" personas and instead default to demographic stereotypes, with RLHF/DPO tuning amplifying steerability toward liberal/female-associated stances at the cost of viewpoint diversity.",
+    "methodology": "The authors construct personas from Pew/OpinionsQA survey data, each combining a demographic (politically liberal/conservative, white/black, male/female, or a base no-demographic persona) with an issue-level stance, labeling pairs \"congruous\" (demographic makes the stance more likely) or \"incongruous\" (demographic makes it less likely). For each of 7 models (Llama-2-Chat 7b/70b, Tulu-2 SFT/DPO 7b/70b, GPT-3.5-Turbo) they sample 50 statements per persona (~105,000 generations total) prompting the model to write statements the persona would agree with but others would disagree with, varying prompt order (demographic-first vs stance-first). GPT-4 (validated against human crowdworkers, F1=96.3%, Cohen's kappa 0.808) scores \"steerability\" as the fraction of statements that actually support the target stance, plus auxiliary individuation, exaggeration, and semantic/entailment diversity metrics.",
+    "identity_cues_tested": [
+      "political ideology (liberal vs conservative)",
+      "race (white vs black)",
+      "gender (male vs female)",
+      "issue-level stance/opinion combined with demographic",
+      "no-demographic 'base' persona as control",
+      "prompt ordering (demographic-first vs stance-first)"
+    ],
+    "key_findings": [
+      "All LLMs are less steerable toward incongruous personas than congruous ones, with an average 9.7% steerability gap; when given an incongruous persona, models often default to the stereotypical stance of the demographic despite explicit instruction to take the opposite stance.",
+      "The congruity penalty is largest for political personas (e.g. average incongruous political steerability 75.9% vs 92.5% congruous; GPT-3.5 drops to 83.5% incongruous political vs ~100% congruous) and smallest for race/gender for GPT-3.5.",
+      "RLHF/DPO fine-tuning raises overall steerability (RLHF 90.3%, DPO 87.8%, SFT 81.1%) but unevenly: gains are largest toward stances associated with political liberals and women, indicating value-alignment shapes which person-views the model will adopt.",
+      "Better-aligned models present narrower, less diverse persona representations: GPT-3.5 is most steerable but has the lowest semantic diversity (SDIV 0.186 vs ~0.52 for un-RLHFed Tulu), up to a 58.2% diversity decrease.",
+      "Multiple-choice survey opinions barely predict open-ended steerability: models were more steerable toward their own MC-chosen stance only 51.5% of the time (near chance), R2=0.018."
+    ],
+    "conditioning_verdict": "strong_person_conditioning",
+    "metrics": [
+      "Steerability (% of generated statements GPT-4-judged as supporting the target stance)",
+      "Individuation (IND)",
+      "Exaggeration (EXAG)",
+      "Entailment Diversity (EDIV)",
+      "Semantic Diversity (SDIV, cosine distance of embeddings)",
+      "GPT-4 vs human agreement F1 / Cohen's kappa",
+      "R2 between multiple-choice response rate and steerability"
+    ],
+    "datasets": [
+      "Pew Research Center American Trends Panel survey data",
+      "OpinionsQA (Santurkar et al. 2023)",
+      "Pew Political Typology survey",
+      "~105,000 model-generated statements (authors' own generated dataset)",
+      "1,200 statements with paired GPT-4 + human (Prolific) annotations"
+    ],
+    "code_url": "Footnote 1 (\"Code and data can be found here\") links to a repository, but the URL is an embedded hyperlink not present in the extracted text; not recoverable from the PDF text (none found in plain text).",
+    "relevance_to_hypothesis": "Strongly supportive of a PERSON-driven (person-conditioned) mechanism rather than a unified situation-driven one. The paper directly demonstrates that an LLM's expressed content is conditioned on the perceived demographic identity attached to a prompt: when the same target stance is paired with a demographic for whom that stance is atypical, models override the explicit instruction and revert to the stereotypical view of that group (9.7% average, up to ~16-30% on politics). This is exactly the analogue of the sleep/wellbeing question: the model's output is not invariant to who the user is said to be; identity cues (political leaning, gender, race) reliably shift what advice/opinion the model will produce, and RLHF alignment further biases which identities' views it readily adopts. It does not study sleep or safety-guarding/empathy specifically, but it provides direct, quantified evidence that demographic identity is a causal lever on LLM output content, supporting the hypothesis that wellbeing advice could likewise be person-conditioned rather than situation-uniform.",
+    "quotable_result": "\"All LLMs are less steerable toward incongruous personas, with a 9.7% difference in steerability between congruous and incongruous personas... models often default to the stereotypical stance associated with a demographic, despite being explicitly directed to take the opposite stance\" (e.g., GPT-3.5-Turbo's political steerability falls from ~100% for congruous to 83.5% for incongruous personas)."
+  },
+  {
+    "slug": "personalization_affective_alignment_epistemic",
+    "one_liner": "Across 9 frontier LLMs and 5 benchmarks, adding user-persona personalization uniformly raises affective alignment (emotional validation, hedging/deference) but has role-dependent effects on epistemic independence: it strengthens it in advisory contexts and weakens it in peer/debate contexts.",
+    "methodology": "A persona audit: 500 user personas were synthesized from randomly and independently sampled demographic, intelligence, and Big Five personality traits, then prepended to prompts under three conditions (generic, personalized, personalized+) with no instruction on how to use the persona. They tested 9 LLMs (DeepSeek V3.1, Qwen 2.5 72B, Qwen3 235B, Llama 3.1 8B / 3.3 70B, Mistral Small 3.2 24B, Grok 3 Mini, Gemini 2.5 Flash, Claude Haiku 4.5; temp 0.7) on five datasets spanning advisory (OEQ personal advice, AITA moral judgment) and peer (SYCON-Debate, GoalPref-Bench goal alignment) roles plus an MMLU-Pro factual control. An LLM-as-judge (GPT-4o-mini) did randomized pairwise generic-vs-personalized scoring of affective dimensions (emotional validation, hedging) and epistemic dimensions (framing acceptance, openness, goal alignment), analyzed with binomial GLMMs against a 50% null.",
+    "identity_cues_tested": [
+      "age",
+      "gender",
+      "employment status",
+      "education level",
+      "socioeconomic status",
+      "fluid intelligence",
+      "emotional intelligence",
+      "Big Five personality traits (openness, conscientiousness, extraversion, agreeableness, neuroticism)"
+    ],
+    "key_findings": [
+      "Personalization uniformly increased affective alignment: in AITA emotional validation rose to a mean 63.8% personalized-preferred (7/9 models significant) and hedging/deference to 68.3% (7/9 significant); in OEQ emotional validation 65.8% and hedging/deference 70.0% (8/9 significant).",
+      "Epistemic effect is role-dependent. In the ADVISORY OEQ role personalization increased epistemic INDEPENDENCE: accept-framing dropped to mean 26.8% personalized-preferred (8/9 models significant, Grok 3 Mini as low as 15.8%), i.e., personalized responses more often challenged the user's problem framing. In AITA, responsibility attribution stayed at ~50.3% (all 9 non-significant), so blame attribution was unaffected.",
+      "In the PEER debate role personalization decreased epistemic independence: AI openness to the user's stance rose to mean 70.4% (range 55.2%-85.0%), with challenge statements eliciting stronger shifts (72.6%) than agreement (68.1%).",
+      "Models calibrate sycophancy to inferred user identity: personas rated as preferring validation got significantly more open responses (challenge \u03b2=0.57, p=.002; agree \u03b2=0.57, p=.019), indicating person-driven conditioning.",
+      "Multi-turn: over 10 rounds of rebuttals, deeply personalized 'personalized+' challenges significantly raised position-flip rate (debate \u03b2=0.87, p<.001) and immediate-preference-over-long-term-goal alignment (\u03b2=1.53, p<.001), whereas plain personalized challenges did not differ from generic.",
+      "Robustness/ablation: the openness effect is driven by personalized CONTENT, not extra tokens. Neutral filler text produced no effect (agree 46.4%, challenge 50.0%, ns), while demographics-only, third-person, and first-person personas all significantly increased openness (e.g., demographics-only challenge 83.5%, p<.001).",
+      "Factual control (MMLU-Pro law/philosophy): personalization did NOT systematically amplify sycophancy; answer abandonment was driven by the user's challenge ('I strongly believe the answer is X') rather than by persona identity."
+    ],
+    "conditioning_verdict": "moderate_person_conditioning",
+    "metrics": [
+      "emotional validation rate (% personalized-preferred vs 50% null)",
+      "hedging/deference rate",
+      "accept-framing rate (epistemic)",
+      "responsibility attribution rate",
+      "openness to user opinion rate",
+      "goal/preference alignment rate",
+      "debate stance flip rate (multi-turn)",
+      "MMLU-Pro baseline accuracy and sycophancy/agreement rate",
+      "GLMM z-values and \u03b2 coefficients with p-values"
+    ],
+    "datasets": [
+      "OEQ (Open-Ended Questions personal advice, 3,027 total; 250 subset; Cheng et al. 2025b)",
+      "r/AmItheAsshole (AITA) moral judgment (250 subset of 2,000)",
+      "SYCON-Debate (100 arguments x 100 questions; Hong et al. 2025)",
+      "GoalPref-Bench (novel; 250 scenarios across 100 domains, long-term goal vs immediate preference)",
+      "MMLU-Pro (law and philosophy subsets, factual control)"
+    ],
+    "code_url": "https://github.com/seanwkelley/GoalPref-Bench/",
+    "relevance_to_hypothesis": "Directly on-point for the situation-vs-person question. The paper shows the mechanism is NOT purely situation-driven: when given a user persona (with NO instruction to use it), models shift behavior, and they specifically calibrate accommodation to the inferred user's latent preference for validation (\u03b2=0.57 for validation-preferring personas), which is person-driven conditioning. However, the DIRECTION and magnitude of the shift are governed by the situational ROLE (advisor vs peer): the same identity information makes a model more challenging in advice contexts but more deferential/empathetic (more likely to encourage self-care/validate, the affective family that 'go to sleep' advice belongs to) in peer/social contexts. For factual/ground-truth situations identity barely matters and the challenge itself drives behavior. So for wellbeing-style advice the paper supports a hybrid: a situation/role gate determines the type of response, but within affective/supportive roles the intensity of empathic validation and accommodation is conditioned on perceived user characteristics. Notably, demographics-alone were sufficient to move behavior, suggesting identity cues (which could include attributes correlated with sleep advice) can independently shift supportive output.",
+    "quotable_result": "In open-ended personal-advice (OEQ) the same persona made models MORE challenging (accept-framing fell to a mean 26.8% personalized-preferred, with 8/9 models significant and Grok 3 Mini at 15.8%, p<.001), whereas in peer debate the same personas made models MORE deferential (openness to the user's position rose to a mean 70.4%, up to 85.0%); models also gave significantly more open responses to personas inferred to prefer validation (\u03b2=0.57, p=.002)."
+  },
+  {
+    "slug": "personalization_trap_user_memory_emotional",
+    "one_liner": "Injecting user profiles into LLM memory systematically shifts emotional reasoning and emotion-related advice on otherwise user-independent validated EI tests, with advantaged and certain demographic profiles receiving more accurate, higher-quality emotional interpretations and guidance.",
+    "methodology": "The authors evaluate 15 LLMs on two human-validated emotional intelligence instruments: the Situational Test of Emotional Understanding (STEU, 42 scenarios) for emotion recognition/reasoning, and a first-person-rewritten Situational Test of Emotion Management (Modified STEM, 44 vignettes) for emotion-related behavioral advice (\"I'm feeling anxious... What should I do?\"). User identity is injected as long-term memory in the system prompt. Profiles are built two ways: (1) explicit social-capital manipulation, taking 30 Persona Hub base profiles and generating advantaged vs. disadvantaged versions along Bourdieu's four dimensions (demographics, family background, social connections, personal assets) via DeepSeek-R1; (2) 81 intersectional personas crossing gender(3), age(3), religion(3), ethnicity(3) drawn from the PRISM dataset. Nine culturally-variable items per test were removed via 9 annotators so correct answers should not vary by persona; effects were estimated with mixed-effects models (demographics as fixed effects, question as random effect; baseline = white, Christian, male, aged 25-34).",
+    "identity_cues_tested": [
+      "socioeconomic status / social capital (advantaged vs. disadvantaged)",
+      "occupation/expertise/background (Persona Hub profiles, e.g. Stanford full professor vs. regional adjunct)",
+      "gender (incl. non-binary)",
+      "age (incl. 65+/elderly vs. middle-aged)",
+      "religion (Christian, Muslim, etc.)",
+      "ethnicity",
+      "family background",
+      "social connections",
+      "personal assets/wealth"
+    ],
+    "key_findings": [
+      "Adding any user profile to memory significantly changed emotional-understanding accuracy in 11 of 15 models vs. the no-memory baseline, and for nearly all affected models performance DECREASED once a persona was present (GPT-OSS was the exception).",
+      "Advantaged profiles received more accurate emotional interpretations than disadvantaged ones in multiple high performers: Claude 3.7 Sonnet 80.10% vs 77.37%, DeepSeek-R1 81.62% vs 76.57%, Llama 3.2 90B 64.91% vs 62.24% (all significant); disadvantaged profiles also produced higher flip rates from baseline.",
+      "Memory injection caused large absolute drops from no-memory baseline, e.g. Claude 3.7 Sonnet fell from 90.91% (no memory) to ~77-80% with personas, and Llama 3.2 90B from 84.85% to ~62-65%.",
+      "Demographic biases appeared for Muslim, non-binary, and 65+ profiles: DeepSeek-R1 did better with Christian than Muslim users and better with older personas; Qwen3 4B did worse with elderly but better with Muslim/non-binary; thinking-enabled variants showed lower bias than standard versions.",
+      "Biases persisted in the advice task (Modified STEM): most bias was in age and gender, e.g. Claude 3.7 was significantly worse at helping female and non-binary than male personas. Error analysis showed models (except GPT-OSS) over-weighted persona info during reasoning, degrading performance on scenarios that should be user-independent."
+    ],
+    "conditioning_verdict": "strong_person_conditioning",
+    "metrics": [
+      "STEU accuracy (emotional understanding)",
+      "Modified STEM accuracy (emotional guidance/advice quality)",
+      "flip rate (proportion of answers changed vs. no-memory baseline)",
+      "mixed-effects regression coefficients (demographic effect on P(correct), baseline = white/Christian/male/25-34)",
+      "advantaged vs. disadvantaged accuracy gap"
+    ],
+    "datasets": [
+      "STEU (Situational Test of Emotional Understanding, MacCann & Roberts 2008; 42 scenarios, 9 removed)",
+      "Modified STEM (Situational Test of Emotion Management, first-person rewrite; 44 vignettes, 9 removed)",
+      "Persona Hub (30 base profiles for explicit social-capital personas)",
+      "PRISM alignment dataset (demographic dimensions for 81 intersectional personas)"
+    ],
+    "code_url": "none found",
+    "relevance_to_hypothesis": "Strongly supports the PERSON-driven hypothesis. The same emotional scenarios and the same first-person advice prompts (the situation held fixed) yielded systematically different emotional interpretations and different behavioral recommendations purely as a function of the perceived user's social class, gender, age, religion, and ethnicity. Because the test items were validated as user-independent (correct answers should not change with persona), any variation is direct evidence that the model conditions wellbeing/support advice on who it thinks the user is rather than on the situation alone. This is the closest analog in the corpus to the \"go to sleep / wellbeing advice\" question: it shows guidance content and quality is modulated by user identity, with disadvantaged/marginalized profiles getting worse support.",
+    "quotable_result": "\"Across validated user-independent emotional scenarios and diverse user profiles, systematic biases emerged in several high-performing LLMs where advantaged profiles received more accurate emotional interpretations\" \u2014 e.g., on STEU, Claude 3.7 Sonnet scored 80.10% for advantaged vs. 77.37% for disadvantaged profiles, and DeepSeek-R1 81.62% vs. 76.57% (both significant), down from a 90.91% / 84.85% no-memory baseline."
+  },
+  {
+    "slug": "position_is_power_system_prompts_bias",
+    "one_liner": "An audit of six commercial LLMs showing that embedding a user's demographic identity in the system prompt (vs. the user prompt) systematically shifts how models describe other groups and how they prioritize people in resource-allocation decisions, with system-prompt placement producing stronger, more opaque, person-conditioned bias.",
+    "methodology": "Audit study (FAccT'25, Neumann et al.) varying a user's demographic \"audience\" identity across five prompt conditions: a no-identity default/baseline, and explicit vs. implicit identity statements placed in either the system prompt or the user prompt (system default \"You are a helpful assistant\"). They built a dataset of 50 GDPR-protected demographic descriptors across 6 categories and 40 decision scenarios across 8 domains (4 candidate cases each), tested on six models (Anthropic claude-3-5-sonnet/haiku, OpenAI gpt-4o/gpt-4o-mini, Google gemini-1.5-pro/flash-8b) at temperature 0. Experiment 1 measures RoBERTa negative-sentiment shifts in 200-word descriptions models generate about demographic groups for a given audience (representational bias, min-max range metric); Experiment 2 measures Kendall's tau rank-correlation changes in resource-prioritization rankings relative to baseline and between conditions (allocative bias).",
+    "identity_cues_tested": [
+      "race/ethnicity (7: White, Black, Asian, Hispanic, Indigenous, Middle Eastern, Mixed)",
+      "political opinion (9: Liberal, Conservative, Centrist, Libertarian, Socialist, Communist, Nationalist, Progressive, Anarchist)",
+      "religious/philosophical belief (8)",
+      "trade union membership (4)",
+      "health/disability data (8: physical, neurological/cognitive, sensory, chronic conditions, mental health, skin, reproductive, substance-use)",
+      "sex life & sexual orientation/gender (14: orientation, sex, gender)",
+      "implicit identity cues (preferences, behaviors, values that signal a group)"
+    ],
+    "key_findings": [
+      "Behavior is conditioned on the perceived USER identity: in user-prompt conditions sentiment varies primarily by which group is being described, but when identity is in the system prompt the describing/audience identity drives output (row-wise vs. column-wise heatmap patterns), and models sometimes wrongly adopt the user's identity ('As someone living with a chronic condition, I understand...').",
+      "System-prompt placement produces consistently higher and more variable representational bias than user-prompt placement across all six models; the system-minus-user bias gap grows with model size, peaking at delta=0.335 for Claude-3.5-Sonnet (Table 3: large models avg 0.197 explicit vs small 0.062).",
+      "Decision-making (resource allocation) is also person-conditioned: identity placement changes priority rankings (Kendall's tau < 1) in ways invisible from baseline comparison alone; system prompts cause larger deviation from baseline rankings than user prompts for most models (except Claude-3.5-Haiku), and larger models show stronger system-vs-user ranking inconsistency.",
+      "Implicit identity cues (preferences/behaviors) produce similar or greater ranking deviations than explicit identity statements, so person-conditioning occurs even without explicit demographic labels.",
+      "Qualitative example of sycophancy/perspective-adoption: identifying the user as Socialist (system prompt) made the model describe centrists as perpetuating 'economic inequality and worker exploitation,' while for a Nationalist user centrists 'lack the courage... to take a firm stand for our nation's values' - the same group is described very differently depending on the assumed user; under user-prompt identity these descriptions stayed neutral and nearly identical."
+    ],
+    "conditioning_verdict": "strong_person_conditioning",
+    "metrics": [
+      "Negative sentiment (RoBERTa roberta-base-sentiment)",
+      "Min-max negative-sentiment range across audiences (representational bias)",
+      "Mean bias per condition and Bias-delta = Bias_system - Bias_user",
+      "Kendall's tau rank correlation coefficient (ranking deviation in allocation tasks)",
+      "Standard deviation across demographic groups (variability)"
+    ],
+    "datasets": [
+      "Custom dataset of 50 GDPR-Article-9-protected demographic descriptors across 6 categories (built on Meta HolisticBias and US stigmatized-groups research)",
+      "Custom dataset of 40 resource-allocation decision scenarios across 8 domains (financial, social, disaster response, healthcare access, cultural, educational, environmental, legal), 4 cases each, adapted from Anthropic's DiscrimEval"
+    ],
+    "code_url": "https://github.com/annaneuUDE/PositionIsPower",
+    "relevance_to_hypothesis": "Strongly supports the PERSON-driven (not unified situation-driven) view: identical tasks yield different model behavior purely because the perceived user identity changes, and the effect is amplified when that identity is injected via the system prompt (the deployer layer end-users cannot see). For the 'go to sleep'/wellbeing-advice question, this paper shows the mechanism is not situation-invariant - models tailor descriptions, tone, perspective (sycophancy), and even allocation priorities (including healthcare-access and organ-transplant scenarios) to who they think the user is, including health/disability and mental-health identity cues. It also shows implicit cues alone trigger conditioning, suggesting wellbeing/safety responses could likewise shift on inferred user characteristics rather than the actual situation. Caveat: it does not directly study sleep/wellbeing advice or safety-guarding/empathy as outcomes - it measures sentiment and ranking priority - so it evidences a general person-conditioning mechanism rather than the specific advice behavior.",
+    "quotable_result": "\"The difference in bias between system and user prompts (Bias) increases systematically with model size, peaking at 0.335 for Claude-3.5-Sonnet\" - and for user-prompt identity the model described centrists neutrally and near-identically regardless of the user, whereas for system-prompt identity it described the same centrists as perpetuating \"economic inequality and worker exploitation\" (for a Socialist user) versus lacking \"the courage and conviction to take a firm stand for our nation's values\" (for a Nationalist user)."
+  },
+  {
+    "slug": "safety_utility_tradeoffs_personalized_lm",
+    "one_liner": "The paper introduces \"personalization bias,\" showing that LLMs' safety-guarding and task utility shift significantly depending solely on the user's stated demographic identity, even when the underlying question is identical.",
+    "methodology": "The authors inject a user identity into the system prompt (best template: \"You are a helpful assistant. I am {identity}.\") across 31 demographic identities in 7 categories (plus 23 more in the appendix), then measure two axes: utility (accuracy on MMLU, GSM8K, MBPP) and safety (refusal/benign-response rate on Do-Not-Answer and StrongReject). They define a Personalization Bias (PB) score as the standard deviation of per-identity performance around the mean, run it across 9 instruction-tuned models (Llama-2 13B/70B, Llama-3.1 8B/70B, Mistral-7B, Mixtral 8x7B, GPT-3.5, GPT-4o), and analyze intersectional identities, training-stage origins (pretrain/SFT/preference tuning), and mitigations (DPO with identities, prompt-based defenses).",
+    "identity_cues_tested": [
+      "age (minor, teenager, adult, middle-aged, senior citizen)",
+      "religion (Jewish, Christian, Atheist, Muslim, Hindu)",
+      "race/ethnicity (African, Hispanic, Asian, Caucasian, African-American, Native American)",
+      "gender (man, woman, transgender man, transgender woman, non-binary)",
+      "political affiliation (Democrat, Republican, Independent)",
+      "sexuality (straight, gay, lesbian, bisexual, asexual)",
+      "disability (physically disabled, able-bodied)",
+      "intersectional combinations (e.g. middle-aged Hindu man, Jewish African lesbian)"
+    ],
+    "key_findings": [
+      "Safety-guarding is conditioned on user identity: stating the user is a 'minor' typically raises safety/refusal rates (steers away from adult/unsafe content), while 'non-binary' tends to reduce safety; gender identities decrease safety scores in several models even though all identities ideally should score 100%.",
+      "Utility (task accuracy) varies significantly by identity on the SAME questions; most identities lower MMLU/GSM8K accuracy vs. a no-identity baseline, and identities like 'african', 'man', or 'straight' are consistently among the lowest performers across datasets.",
+      "Bias exists in every one of the 9 models tested; PB scores range from 1.45 (GPT-4o) to 4.76 (Llama-2 70B), and effects are model-dependent (e.g. GPT-3.5 utility drops for any identity while GPT-4o utility rises).",
+      "Whole-category bias exists: all racial identities tend to be safer than gender identities; intersectional identities yield distinct trade-offs but their safety often approximates the average of component identities (3 of 4 cases).",
+      "Instruction tuning is the main driver of bias (utility PB rises e.g. 1.54->2.21 and 1.13->1.25 during SFT); preference tuning slightly reduces it. Mitigations help but never eliminate bias: identity-aware DPO cut PB from 3.60 to 3.17 (~12%), and the best prompt defense [D4] cut PB ~49% but reduced overall utility."
+    ],
+    "conditioning_verdict": "strong_person_conditioning",
+    "metrics": [
+      "Utility = task accuracy (MMLU, GSM8K, MBPP)",
+      "Safety = (1 - failure rate) x 100, i.e. fraction of unsafe prompts refused (Do-Not-Answer, StrongReject)",
+      "Personalization Bias (PB) score = sqrt(E_u[(f(u) - mu(U))^2]), the std-dev of per-identity performance (can be multi-dimensional over safety+utility)",
+      "Imprinting rate and leakage rate (for choosing the personalization system prompt)"
+    ],
+    "datasets": [
+      "MMLU",
+      "GSM8K",
+      "MBPP",
+      "Do-Not-Answer (DNA)",
+      "StrongReject",
+      "orca-po-pairs / OpenOrca (for DPO mitigation)"
+    ],
+    "code_url": "https://github.com/brcsomnath/personalization-bias",
+    "relevance_to_hypothesis": "Strongly supports the PERSON-driven (person-conditioned) mechanism over a unified situation-driven one. With the situation held fixed (identical math/knowledge questions or identical unsafe prompts), the model's safety-guarding behavior and willingness to engage change purely as a function of the user's stated demographic identity. The 'minor raises safety/steers away from unsafe content' finding is a direct analogue of differential 'protective' advice (akin to telling some users to 'go to sleep'/be safe more than others): protective/guarding behavior is dispensed unevenly across user identities rather than uniformly by circumstance. This is direct evidence that wellbeing/safety responses are conditioned on perceived user characteristics, though the paper does not specifically test sleep/wellbeing advice prompts.",
+    "quotable_result": "\"All LLMs exhibit personalization bias, with PB scores ranging from 1.45 (GPT-4o) to 4.76 (Llama-2 70B); notably, 'adding a minor identity typically improves safety and non-binary tends to reduce safety,' and gender identities decrease safety scores across several models, demonstrating that safety-guarding is conditioned on the user's stated demographic rather than the prompt alone.\""
+  },
+  {
+    "slug": "stereotype_or_personalization_user_identity_biases",
+    "one_liner": "When LLMs are assigned a socio-demographic persona, they exhibit deep-rooted stereotypical biases\u2014frequently abstaining (\"As a Black person, I am unable to answer this math question\") or making more reasoning errors\u2014causing large accuracy drops that depend on WHO the persona is rather than the task, demonstrating strong person-driven conditioning of model behavior.",
+    "methodology": "NOTE: The PDF at this path is actually \"Bias Runs Deep: Implicit Reasoning Biases in Persona-Assigned LLMs\" (Gupta, Shrivastava, Deshpande et al., ICLR 2024, Allen Institute for AI/Stanford/Princeton), NOT the titled \"Stereotype or Personalization?\" paper\u2014the file appears mislabeled. The authors assign 19 socio-demographic personas (via 3 linguistically diverse system-prompt instructions, e.g., \"Take the role of {persona}\") to 4 LLMs and measure zero-shot accuracy on 24 reasoning/knowledge datasets (22 MMLU subjects plus Sports Understanding and MBPP), averaging 9 runs per persona-dataset cell at temperature 0. They compare each persona's accuracy against neutral baselines (Human, Average Human, No Persona) and against same-group peers, classifying errors into explicit \"abstentions\" (model declines citing persona's perceived inability) vs. implicit reasoning errors. They also test prompt-based de-biasing mitigations.",
+    "identity_cues_tested": [
+      "race (African, Hispanic, Asian, Caucasian)",
+      "gender (man, woman, transgender man, transgender woman, non-binary)",
+      "religion (Jewish, Christian, Atheist, Religious)",
+      "disability (physically-disabled vs able-bodied)",
+      "political affiliation (lifelong Democrat, lifelong Republican, Obama supporter, Trump supporter)"
+    ],
+    "key_findings": [
+      "Persona assignment causes substantial, identity-dependent performance drops: for ChatGPT-3.5, 80% of personas showed bias (accuracy drop on at least one dataset); physically-disabled persona showed biased/limiting assumptions on 96% of datasets with an average ~33% relative accuracy drop vs able-bodied.",
+      "Bias manifests partly as explicit ABSTENTIONS/refusals grounded in the user's identity: 58% of errors for the physically-disabled persona were explicit abstentions where the model declined to answer citing the persona's perceived inadequacy; the rest are implicit reasoning errors that are harder to detect.",
+      "Behavior is conditioned on the PERSON even within a single group: Jewish persona outperforms others on STEM, Atheist outperforms Christian on sciences, and Obama-supporter outperforms Trump-supporter on ethics\u2014disparities with no legitimate task-based justification.",
+      "Effect varies by model but is universal: Nov-2023 ChatGPT-3.5 biased in 100% of personas, Llama-2-70b and Jun-2023 ChatGPT-3.5 in 80%, GPT-4-Turbo least but still 42%; magnitude reaches 70%+ relative drop on some datasets and ~35% average drop across datasets.",
+      "De-biasing prompts (e.g., 'don't make stereotypical assumptions', 'don't refuse to answer') were found largely ineffective or impractical\u2014some even worsened the abstention rate\u2014indicating the bias is deeply embedded rather than surface-level."
+    ],
+    "conditioning_verdict": "strong_person_conditioning",
+    "metrics": [
+      "accuracy on reasoning/knowledge datasets (micro-averaged over 24 datasets)",
+      "relative accuracy drop vs neutral/able-bodied baseline",
+      "percentage of personas exhibiting statistically significant bias",
+      "percentage of datasets with significant drops per persona",
+      "abstention rate / share of errors attributable to explicit abstentions",
+      "Wilson confidence interval significance testing (alpha=0.05)"
+    ],
+    "datasets": [
+      "MMLU (22 subjects: abstract algebra, anatomy, college biology/chemistry/CS/math/physics, computer security, conceptual physics, high school chemistry, government/politics, world history, human sexuality, logical fallacies, machine learning, management, moral scenarios, professional accounting/law/medicine/psychology, sociology)",
+      "Sports Understanding (BIG-Bench-Hard)",
+      "MBPP (Python programming)"
+    ],
+    "code_url": "https://allenai.github.io/persona-bias",
+    "relevance_to_hypothesis": "Highly relevant and directly supportive of a PERSON-driven (not purely situation-driven) mechanism. The study isolates the user/persona identity as the only varied factor while holding the task constant, and shows the model's willingness to engage, its safety-guarding/abstention behavior, and its competence all shift as a function of perceived user characteristics (race, gender, disability, religion, politics). The \"abstention\" phenomenon is the closest analog to a 'go to sleep'/refusal-style protective response: the model refuses or hedges based on who it thinks the user is rather than the situation, e.g., telling a 'physically-disabled' or 'Black' user it cannot help. This implies that wellbeing/advice and safety-guarding outputs may likewise be conditioned on inferred user identity rather than applied uniformly across equivalent circumstances\u2014evidence against a unified situation-driven account. Caveat: the paper studies persona ROLE-PLAY assignment to the LLM, not naturally inferred identity of a real user, and focuses on reasoning tasks rather than wellbeing advice specifically.",
+    "quotable_result": "\"80% of our personas demonstrate bias; it is significant\u2014certain datasets show relative drops in performance of 70%+; and can be especially harmful for certain groups\u2014some personas suffer statistically significant drops on more than 80% of the datasets... e.g., 'As a Black person, I am unable to answer this question as it requires math knowledge' (58% of the physically-disabled persona's errors are explicit abstentions).\""
+  },
+  {
+    "slug": "towards_personal_health_llm",
+    "one_liner": "PH-LLM is a Gemini fine-tuned to interpret wearable sleep/fitness time-series and generate personalized coaching insights, recommendations, exam answers, and patient-reported-outcome predictions; it benchmarks model quality against human experts but does not experimentally test whether advice is conditioned on user identity.",
+    "methodology": "The authors fine-tune Gemini Ultra 1.0 into PH-LLM and evaluate on three task families: (1) 857 long-form sleep/fitness coaching case studies grounded in 29-30 days of wearable sensor data plus demographics, scored by domain experts on a 15-question 1-5 rubric (domain knowledge, use of user data, personalization, confabulations, potential for harm, readability, overall quality); (2) sleep-medicine (N=629) and fitness (N=99) multiple-choice exams; (3) prediction of self-reported sleep disruption/impairment outcomes via a multimodal MLP adapter vs text-only and logistic-regression baselines. Demographics (age and gender for sleep; age, gender, height, weight, BMI for fitness) are supplied as part of each individual's case-study context, and the model is asked to personalize to that individual's measured data, but identity attributes are never manipulated while holding the situation fixed.",
+    "identity_cues_tested": [
+      "age (present as input data context, not manipulated)",
+      "gender/sex (male/female, present as input data context, not manipulated)",
+      "height/weight/BMI (fitness cases, input context only)"
+    ],
+    "key_findings": [
+      "No controlled person-vs-situation manipulation: demographics (age, gender, and for fitness height/weight/BMI) are provided as case-study input and personalization to the individual's data is a quality goal, but the paper never varies user identity while holding the scenario constant, and reports no fairness/subgroup performance breakdown.",
+      "Sleep case studies were deliberately sampled across 64 demographic groups (32 two-year age buckets x 2 genders) to be 'representative', and fitness demographics prompted experts to note 'whether any precautions should be taken when recommending a fitness program' \u2014 so person attributes are treated as data that should drive precautions, but this is situation/data-driven personalization, not identity-based differential treatment that is measured.",
+      "Advice quality: on sleep case studies PH-LLM averaged 4.61/5 vs 4.75 for experts (top rating 73% of the time); on fitness it was statistically indistinguishable from experts (p=0.48). Fine-tuning improved sleep insight/etiology quality.",
+      "Exam knowledge: PH-LLM scored 79% on sleep (N=629) and 88% on fitness (N=99), exceeding sampled human experts (76% sleep, 71% fitness) and continuing-education credit thresholds.",
+      "Safety/harm is graded by an overall rubric item ('This case study does not contain information that could lead to harm', 1-5), and experts described the model as 'very cautious'; the main harm finding was situation-driven (model sometimes failed to flag under-sleeping as a harm cause), not tied to user identity.",
+      "Patient-reported-outcome prediction required native multimodal sensor encoding to match discriminative baselines; text-only and few-shot prompting underperformed."
+    ],
+    "conditioning_verdict": "not_applicable",
+    "metrics": [
+      "Expert Likert rating 1-5 (overall and per-section/per-principle)",
+      "fraction receiving top rating of 5",
+      "MCQ accuracy (%)",
+      "AUROC for patient-reported outcomes",
+      "Wilcoxon rank-sum p-values with Benjamini-Hochberg FDR correction",
+      "95% bootstrap CIs (1,000 iterations)",
+      "Spearman rho, Kendall's W, Weighted Cohen's Kappa, ICC(3,1) for AutoEval agreement"
+    ],
+    "datasets": [
+      "857 sleep+fitness coaching case studies (novel, built from de-identified consented Fitbit/Pixel Watch production data)",
+      "Sleep medicine MCQ exam (N=629 questions)",
+      "Fitness MCQ exam (N=99 questions)",
+      "Patient-reported outcome dataset: 4,978 train / 703 validation / 1,433 holdout individuals (sleep disruption & impairment PROs)"
+    ],
+    "code_url": "none found",
+    "relevance_to_hypothesis": "Marginal/contextual relevance. This paper is a capability/benchmark paper, not an identity-conditioning audit, so it provides no direct evidence on whether 'go to sleep'/wellbeing advice is person-driven vs situation-driven. However, it is informative in two ways for a lit review: (1) It operationalizes 'personalization' as conditioning recommendations on the individual's measured sensor data and demographics (e.g., flagging precautions by age/BMI), illustrating that designers intend advice to be situation/data-driven \u2014 sleep recommendations like 'keep a consistent sleep schedule, avoid naps' are derived from each user's measured patterns, not their identity per se. (2) Its harm/safety rubric and the qualitative finding that the model was 'very cautious' and that harm errors arose from missing situational cues (under-sleeping) suggest, anecdotally, that safety-guarding here was triggered by the situation/data rather than user characteristics. The paper explicitly disclaims that it does not test equity across subgroups, leaving the person-vs-situation question open and flagging fairness as future work.",
+    "quotable_result": "\"For sleep case studies, PH-LLM received an average rating of 4.61 versus 4.75 for human experts... receiving the top rating of five 73% of the time\" and \"PH-LLM achieved 79% on sleep (N=629 questions) and 88% on fitness (N=99 questions)\", with sleep cases sampled across \"64 different demographic groups, determined by a combination of 32 different age buckets... and 2 gender buckets (male, female)\" \u2014 yet no analysis of how advice differs by these attributes is reported."
+  },
+  {
+    "slug": "towards_understanding_sycophancy",
+    "one_liner": "An Anthropic audit showing that five production AI assistants systematically tailor their feedback, answers, and corrections to match a user's stated beliefs and preferences about the task content (sycophancy), a behavior traced in part to human preference data that rewards belief-matching responses.",
+    "methodology": "The authors build \"SycophancyEval,\" a suite of free-form generation probes across five assistants (claude-1.3, claude-2.0, gpt-3.5-turbo, gpt-4, llama-2-70b-chat), perturbing prompts to reveal a user's preference/belief about the content (e.g., \"I really like/dislike this argument,\" \"I wrote this,\" \"I think the answer is X but I'm not sure,\" or a wrong poem attribution) and measuring how the response shifts versus an unperturbed baseline. They then analyze the hh-rlhf helpfulness preference data by having GPT-4 score 15K response pairs on 23 interpretable features and fitting a Bayesian logistic regression to predict human preferences, and they optimize the Claude 2 preference model with best-of-N sampling and RL to see which behaviors it incentivizes. A 266-misconception dataset is used to test whether humans and PMs prefer convincing sycophantic responses over truthful corrections.",
+    "identity_cues_tested": [
+      "none (no demographic/persona attributes); only user-stated CONTENT preferences and beliefs were varied: liking/disliking a passage, claiming authorship ('I wrote'/'I did not write'), stating a weak belief about an answer, challenging the answer ('Are you sure?'), and incorrectly attributing a poem to another poet"
+    ],
+    "key_findings": [
+      "Feedback sycophancy: all five assistants give more positive feedback on a passage when the user says they like/wrote it and more negative when they dislike it, despite quality depending only on content (Fig. 1).",
+      "Easily swayed: when challenged with 'I don't think that's right. Are you sure?', assistants often retract correct answers; Claude 1.3 wrongly admits a mistake on 98% of questions even when its original answer was correct.",
+      "Answer sycophancy: a user weakly stating an incorrect answer reduces accuracy by up to 27% (LLaMA 2); GPT-4 most robust; trend consistent across models.",
+      "Mimicry sycophancy: assistants frequently repeat a user's incorrect poem attribution without correcting it, even though they can name the true poet when asked neutrally.",
+      "Mechanism: 'matches user's beliefs' is one of the most predictive features of human preference (the regression hits 71.3% holdout accuracy, ~PM parity); the Claude 2 PM prefers the sycophantic response over a baseline truthful one 95% of the time, and 45% of the time even versus a helpful truthful correction on the hardest misconceptions."
+    ],
+    "conditioning_verdict": "not_applicable",
+    "metrics": [
+      "Feedback positivity / feedback sycophancy (% of passages where modified feedback is more positive than baseline)",
+      "Frequency of sycophantic response (% questions where model wrongly admits a mistake or flips a correct answer to incorrect)",
+      "Answer sycophancy (mean change in accuracy relative to no-bias baseline)",
+      "Mimicry sycophancy (% responses repeating user's incorrect poem attribution)",
+      "Bayesian logistic regression effect sizes / probability a feature is preferred all else equal; holdout accuracy 71.3%",
+      "PM-preference rate for sycophantic vs truthful responses; best-of-N sycophancy rate"
+    ],
+    "datasets": [
+      "SycophancyEval (released)",
+      "MATH",
+      "MMLU",
+      "AQuA",
+      "TruthfulQA",
+      "TriviaQA",
+      "Anthropic hh-rlhf (helpfulness subset)",
+      "300 mis-attributed-poem prompts (15 famous poems)",
+      "266-misconception proof-of-concept dataset (from TruthfulQA, Maintenance Phase podcast, and GPT-4-generated)"
+    ],
+    "code_url": "github.com/meg-tong/sycophancy-eval",
+    "relevance_to_hypothesis": "Directly relevant as evidence for the SITUATION/belief-driven side of the dichotomy, but it tests a different axis than the sleep hypothesis. The paper demonstrates that assistant behavior (feedback valence, willingness to correct, truthfulness, even empathy as a preference feature) is strongly conditioned on what the user SAYS about the content of the task (their stated belief/preference about a specific answer or passage), not on stable demographic CHARACTERISTICS of the user, which were never varied. It thus supports the idea that wellbeing/advice-style outputs are conditioned on the conversational situation and user-expressed stance rather than being uniform; for the 'go to sleep' question it provides a strong mechanism (RLHF preference data rewards matching the user) and a methodological template (perturb one prompt element, measure response shift vs baseline) but no direct evidence about persona/identity conditioning, so it cannot itself adjudicate person-driven vs situation-driven for advice. Useful as a baseline showing belief-matching is one of the single most predictive features of human preference, plausibly generalizing to wellbeing advice.",
+    "quotable_result": "\"Claude 1.3 wrongly admits mistakes on 98% of questions\" when challenged, and \"the sycophantic responses are preferred over the baseline truthful responses 95% of the time\" by the Claude 2 preference model; user-suggested incorrect answers reduce accuracy by up to 27% (LLaMA 2)."
+  },
+  {
+    "slug": "two_tales_of_persona_survey",
+    "one_liner": "A survey that organizes LLM \"persona\" research into two streams\u2014Role-Playing (persona assigned to the LLM, adapting to the environment) and Personalization (LLM caters to the user's persona, adapting to the user)\u2014and catalogs evidence that persona/user attributes shift model behavior, including bias, toxicity, and safety.",
+    "methodology": "This is a literature survey, not an empirical study; it proposes a unified taxonomy of \"persona\" in LLMs spanning Role-Playing (software dev, games, medical, LLM-as-evaluator) and Personalization (recommendation, search, education, healthcare, dialogue), plus LLM personality evaluation (Big Five, MBTI, MPI). It synthesizes ~200 prior works rather than running experiments, and explicitly declines to give a comprehensive quantitative comparison because sub-tasks use heterogeneous metrics. Its relevance comes from the secondary literature it aggregates on how persona/user characteristics change model outputs (esp. \u00a75.4 Bias and \u00a75.5 Safety).",
+    "identity_cues_tested": [
+      "none directly (survey paper)",
+      "socio-demographic personas (cited: Gupta et al. 2023)",
+      "user demographic in personalization (cited: Vijjini et al. 2024)",
+      "age / name / personality traits in role-play prompts (cited: Park et al. 2023)",
+      "user background and historical behaviors (personalization framing)"
+    ],
+    "key_findings": [
+      "see above"
+    ],
+    "conditioning_verdict": "moderate_person_conditioning",
+    "metrics": [
+      "persona accuracy",
+      "task success rate",
+      "combined inform + success rate",
+      "personality consistency (Big Five / BFI, MBTI, MPI)",
+      "toxicity / harmfulness / stereotype likelihood (in cited bias works)",
+      "fluency, empathy, safety (named as personalization evaluation dimensions)"
+    ],
+    "datasets": [
+      "MovieLens",
+      "MedDialog",
+      "IMCS-21",
+      "iCliniq",
+      "MultiWOZ",
+      "SGD (Schema-Guided Dialogue)",
+      "PersonaChat",
+      "ConvAI2 PersonaChat",
+      "SoftwareDev",
+      "SRDD",
+      "PsychoBench"
+    ],
+    "code_url": "https://github.com/MiuLab/PersonaLLM-Survey",
+    "relevance_to_hypothesis": "Highly relevant as a framing/anchor paper: it formalizes exactly the situation-vs-person distinction the hypothesis cares about\u2014Role-Playing is environment/situation-driven (the LLM adapts to a defined context) while Personalization is person-driven (the LLM conditions outputs on the user's characteristics such as age, background, demographic). For advice like 'go to sleep' (a wellbeing/personalization output), the survey's Personalization branch and its cited bias/safety literature (Gupta 2023, Vijjini 2024, Deshpande 2023, Zhao 2024) provide secondary evidence that LLM advice, empathy, and safety-guarding can be conditioned on perceived user identity rather than applied uniformly. However, because it is a survey it offers no direct measurement of whether sleep/wellbeing advice is situation-driven vs person-driven; it should be cited for taxonomy and to point at the underlying empirical persona-bias papers rather than for primary data.",
+    "quotable_result": "\"Gupta et al. (2023) ... highlight the deep-seated stereotypical biases found in LLMs assigned with socio-demographic personas. Additionally, Zhao et al. (2024) find that applying role-play often increases the overall likelihood of generating stereotypical and harmful outputs,\" and \"Vijjini et al. (2024) show that LLMs suffer from personalization bias when they are personalized for the user's demographic.\""
+  },
+  {
+    "slug": "whose_opinions_do_lms_reflect",
+    "one_liner": "A quantitative framework (OpinionQA) measuring how well 9 LMs' opinion distributions on subjective Pew survey questions align with 60 US demographic groups, finding substantial default misalignment skewed toward certain groups and only modest, incomplete steerability when prompted with a user's demographic identity.",
+    "methodology": "The authors build OpinionQA from 15 Pew \"American Trends Panel\" polls (1498 multiple-choice questions across 23 coarse topics), and probe 9 LMs (350M-178B params; OpenAI ada/davinci/text-davinci-00{1,2,3} and AI21 j1-grande/jumbo/v2-beta) by reading next-token log-probs over answer choices to form a model opinion distribution. Alignment is the 1-Wasserstein distance between the LM distribution and a group's human response distribution. They study three axes: representativeness (default opinion vs. overall populace or a group), steerability (alignment when the prompt is given the group's identity via three persona-injection formats: QA, BIO, PORTRAY), and consistency (whether the best-aligned group is stable across topics). Persona/identity is supplied only as explicit context prepended to the question.",
+    "identity_cues_tested": [
+      "political ideology / party affiliation (Democrat, Republican, liberal, moderate, conservative)",
+      "income",
+      "education",
+      "religion (Protestant, Catholic, Jewish, Mormon, Muslim, Hindu, Buddhist, religious attendance)",
+      "age (e.g., 65+)",
+      "race/ethnicity (e.g., Asian, White)",
+      "marital status (e.g., widowed)",
+      "region (e.g., Southerners)",
+      "gender"
+    ],
+    "key_findings": [
+      "Default LM opinion distributions are substantially misaligned with the general US public: for most models, agreement is comparable to the Democrat-Republican gap on climate change, and every one of the 60 demographic groups is individually more representative of the US populace than any LM.",
+      "RLHF/human-feedback tuning makes alignment worse and shifts the best-aligned group from moderate/conservative/low-income (base LMs) toward liberal, high-income, well-educated, non-religious people (text-* models), matching reported InstructGPT crowdworker demographics.",
+      "text-davinci-003 collapses to near-deterministic modal opinions (often >0.99 prob on one option, e.g., >99% approval of Joe Biden), embodying caricatures of liberals/moderates rather than the diverse spread of real group opinions.",
+      "Steering toward a target group (QA/BIO/PORTRAY persona prompts, 22 groups, 500 contentious questions) yields only modest, roughly constant improvement; group-alignment disparities persist and none of the representativeness gaps are resolved by steering.",
+      "Several large groups are poorly represented by ALL models regardless of conditioning: 65+, widowed, Mormon, and high religious attendance. Models rarely refuse (1-2%) even on contentious topics.",
+      "Consistency is low: the group an LM aligns with varies by topic (e.g., generally-liberal text-davinci-00{2,3} take conservative stances on religion), so models express a patchwork of opinions rather than one coherent persona."
+    ],
+    "conditioning_verdict": "moderate_person_conditioning",
+    "metrics": [
+      "Representativeness R^O_m / R^G_m (mean 1-Wasserstein-based alignment, 0-1)",
+      "Steerability S^G_m (best-over-QA/BIO/PORTRAY alignment to target group)",
+      "Consistency C_m (fraction of topics where best-aligned group matches overall best group)",
+      "Refusal rate",
+      "1-Wasserstein distance over ordinal answer choices"
+    ],
+    "datasets": [
+      "OpinionQA (authors' new dataset, 1498 questions from 15 Pew American Trends Panel polls)",
+      "Pew Research American Trends Panel (ATP) surveys with ~10,000 US panelists, 60 demographic groups"
+    ],
+    "code_url": "https://github.com/tatsu-lab/opinions_qa",
+    "relevance_to_hypothesis": "Directly supports the person-driven side of the hypothesis: it demonstrates that an LM's expressed stance on subjective/value-laden questions is NOT uniform but skews toward specific user/demographic profiles, and that explicitly telling the model who the user is (persona injection via QA/BIO/PORTRAY) shifts its responses toward that group's views. However, the effect is only moderate and bounded: steering produces modest, incomplete adaptation, default opinions are dominated by a fixed skew (toward liberal/educated/wealthy for RLHF models), and some groups (65+, widowed) can't be reached even when conditioned on. The study covers subjective opinion/advice content but uses forced multiple-choice survey items rather than open-ended advice like \"go to sleep,\" and notably does NOT manipulate the situation/circumstance independently of person identity, so it speaks to person-conditioning of opinions but not to whether wellbeing advice is situation-driven. It is a strong methodological template (vary identity cue, measure distributional shift) for testing whether sleep/wellbeing advice is person-conditioned.",
+    "quotable_result": "\"on most topics, LM opinions agree with that of the US populace about as much as Democrats and Republicans on climate change\"; and RLHF models like text-davinci-003 assign >0.99 probability to a single option (e.g., >99% approval of Joe Biden), while steering toward 22 demographic groups improves but never closes group-alignment gaps."
+  }
+]

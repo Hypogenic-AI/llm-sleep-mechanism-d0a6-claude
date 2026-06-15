@@ -1,0 +1,16 @@
+# Keep docs, generators, and the small reproducible probe tracked.
+# Exclude only bulk/downloaded data artifacts (can be large).
+*.arrow
+*.bin
+*.parquet
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.npy
+*.npz
+dataset_dict.json
+state.json
+# Downloaded supporting datasets (regenerate via download.sh):
+/prism_alignment/
+/opinionqa/

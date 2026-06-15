@@ -1,0 +1,19 @@
+Large language models (LLMs) increasingly tell users to ``go to sleep'' after long
+late-night sessions, raising a fairness question: is this protective nudge applied
+uniformly based on the \emph{situation}, or is it conditioned on \emph{who} the user
+appears to be? We run a counterfactual identity audit of the go-to-sleep behavior --- 8
+late-night scenarios $\times$ 19 personas $\times$ 5 cross-provider models $\times$ 3
+replicates = 2{,}280 real API responses, each labeled for whether it clearly advises
+sleep --- and decompose the behavioral variance into situation, person, model, and
+interaction components. We find the mechanism is \emph{mostly situation-driven within a
+model but strikingly un-unified across models}. For a fixed model, the situation explains
+about $3.4\times$ more variance than the user's persona ($\omega^2 = 0.110$ vs.\ $0.032$;
+robust at $3.0$--$9.4\times$ across four outcome definitions). A small but significant
+person effect exists for occupation, vulnerability, and age (Cram\'er's $V \approx
+0.14$--$0.19$), but it does \emph{not} follow a protective demographic stereotype: it
+tracks \emph{bodily stakes and role legitimacy}, giving more sleep advice to athletes, the
+ill, and children, and less to night-shift nurses. The single largest determinant is
+\emph{which model} is asked: P(clearly advises sleep) ranges from $0.15$ to $0.82$
+($\omega^2_{\text{model}} = 0.26$), with models agreeing only moderately on whom to tell
+to sleep (mean cross-model $r = 0.36$). ``Go to sleep'' is therefore not a uniform safety
+reflex but a weakly person-conditioned, strongly model-specific behavior.

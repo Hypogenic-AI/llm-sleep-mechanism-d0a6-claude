@@ -1,0 +1,17 @@
+Resource finding phase completed successfully.
+Timestamp: 2026-06-15T04:45:19+00:00
+Papers downloaded: 19 (2 paywalled documented; 19/21 obtained)
+Datasets: 1 primary generated (sleep_persona_probe, 152 prompts) + 2 supporting documented
+Repositories cloned: 2 (sycophancy-eval, opinions_qa) + 6 additional code links cataloged
+
+Deliverables:
+- papers/ (19 PDFs) + papers/README.md + structured deep-read notes (_deepread_notes.json)
+- datasets/sleep_persona_probe/ (counterfactual probe) + datasets/README.md + .gitignore + download.sh
+- code/ (2 repos) + code/README.md
+- literature_review.md (19-paper synthesis)
+- resources.md (full catalog)
+
+Key finding: literature strongly predicts a PARTIALLY person-conditioned mechanism
+(14/17 deep-read papers find person-conditioning), cue-dependent and partly mitigated
+by RLHF. Experiment-ready: probe dataset + analysis plan to decompose situation effect
+vs person effect vs interaction, across a model panel.

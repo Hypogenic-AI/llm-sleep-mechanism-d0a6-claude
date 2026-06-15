@@ -1,0 +1,115 @@
+\section{Methodology}
+\label{sec:method}
+
+\para{Design.} We use a counterfactual identity audit, the dominant paradigm in this
+literature: fix the situation, swap a single identity cue, and measure the behavioral delta.
+We operationalize ``how unified'' as a variance decomposition. If the situation dominates,
+the mechanism is unified (situation-driven); if the person or interaction contributes
+sizable variance, it is person-driven; and we additionally ask whether any conditioning is
+itself consistent across models.
+
+\subsection{The \probe}
+
+The \probe\ (\texttt{datasets/sleep\_persona\_probe/}) is an $8 \times 19 = 152$-cell
+factorial. Each \textbf{scenario} is a late-night fatigue context in which ``go to sleep''
+is plausible but optional --- a competing helpful answer (study tips, productivity help,
+coping strategies) always exists. The eight scenarios are \texttt{study\_cram},
+\texttt{cant\_sleep}, \texttt{work\_deadline}, \texttt{doomscroll}, \texttt{gaming\_late},
+\texttt{anxious\_night}, \texttt{tired\_focus}, and \texttt{one\_more\_task}. Into the
+otherwise-identical prompt we inject a single first-person identity clause defining the
+\textbf{persona}, spanning four factors --- age (child, teen, young, middle, senior), gender
+(woman, man, non-binary), occupation (student, shift-worker nurse, executive, doctor,
+caregiver, unemployed), and vulnerability (depressed, pregnant, ill, athlete) --- plus a
+no-persona \textbf{control} that carries no cue. For example, \texttt{study\_cram} $\times$
+\texttt{age\_child} reads: \emph{``It's 2 a.m.\ and I have a big exam tomorrow morning. I'm 9
+years old. I still don't feel ready. What should I do right now?''}
+
+\subsection{Models and generation}
+
+We query a 5-model cross-provider panel via OpenRouter, with model IDs verified live
+(\tabref{tab:models}). We generate at temperature $0.7$, \texttt{max\_tokens}~$=400$, with
+seed~$=42+\text{replicate}$ and 3 replicates per cell, for a total of $5 \times 152 \times 3
+= 2{,}280$ responses. Collection completed with $2{,}280/2{,}280$ responses, $0$ errors, and
+a $1.9\%$ refusal rate. The audit is API-only (CPU), taking roughly $29$~min to collect plus
+$5$~min to judge, at an estimated API cost of $\approx\$5.75$.
+
+\begin{table}[t]
+    \centering
+    \caption{The cross-provider model panel. Model IDs were verified live on OpenRouter.}
+    \label{tab:models}
+    \begin{tabular}{@{}lll@{}}
+        \toprule
+        \textbf{Label} & \textbf{Model ID} & \textbf{Provider} \\
+        \midrule
+        \gpt        & \texttt{openai/gpt-5.4-mini}             & OpenAI \\
+        \claude     & \texttt{anthropic/claude-sonnet-4.6}     & Anthropic \\
+        \gemini     & \texttt{google/gemini-3.5-flash}         & Google \\
+        \llama      & \texttt{meta-llama/llama-3.3-70b-instruct} & Meta (open weights) \\
+        \deepseek   & \texttt{deepseek/deepseek-v3.2}          & DeepSeek \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Outcome measurement}
+
+Each response is labeled twice. A deterministic \textbf{regex} classifier detects explicit
+sleep phrasing (high precision, low recall). An \textbf{LLM judge} (\gpt, temperature~$0$)
+returns a graded \texttt{strength}~$\in\{0,1,2,3\}$, a binary flag, and a refusal flag.
+Manual inspection of a stratified sample of $20$ responses showed the judge is reliable at
+the extremes (strength $0$ = no sleep advice; strength $3$ = insistent ``stop and sleep'')
+but noisier at the $1{\leftrightarrow}2$ boundary (occasionally scoring ``take a 5-minute
+break'' as mild rest advice). We therefore anchor the \textbf{primary outcome on
+strength~$\geq 2$} (``clearly recommends sleeping'') and report sensitivity across four
+definitions (\tabref{tab:outcomes}).
+
+\begin{table}[t]
+    \centering
+    \caption{The four outcome definitions and their overall positive rates. We anchor on
+    \strongsleep\ (strength~$\geq 2$) and report all headline results across all four.}
+    \label{tab:outcomes}
+    \begin{tabular}{@{}llc@{}}
+        \toprule
+        \textbf{Outcome} & \textbf{Definition} & \textbf{Overall rate} \\
+        \midrule
+        \strongsleep~(\textbf{primary}) & judge strength $\geq 2$ & 0.63 \\
+        \texttt{insist\_sleep} (strict) & judge strength $= 3$ & 0.23 \\
+        \texttt{any\_sleep} (lenient) & judge binary (any rest mention) & 0.78 \\
+        \texttt{regex} (lexical) & explicit keyword match & 0.27 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The regex$\leftrightarrow$judge-binary Cohen's $\kappa$ is low ($0.18$) \emph{by
+construction}: regex is a high-precision, low-recall lexical detector that misses paraphrases
+(``your brain needs rest more than facts'', ``switch to recovery mode'') that the semantic
+judge correctly captures (of $1{,}432$ strength~$\geq 2$ responses, regex catches only
+$40\%$). The $\kappa$ here measures construct mismatch, not judge unreliability; the manual
+validation is the trustworthy reliability check.
+
+\subsection{Analysis and baselines}
+
+Our baselines are the \textbf{no-persona control} (a situation-only anchor against which
+person effects are measured) and the \textbf{cross-model panel} itself. Our analysis plan
+($\alpha = 0.05$, seeds fixed at $42$) is:
+
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item \textbf{Variance decomposition} (OLS-ANOVA $\omega^2$, $\eta^2$) on the binary
+    outcome with terms for model, scenario, persona factor, and scenario~$\times$~persona.
+    This is the core ``how unified'' test.
+    \item \textbf{Per-factor association}: $\chi^2$ tests with Cram\'er's $V$ for each persona
+    factor against the outcome.
+    \item \textbf{Per-persona risk differences} versus control, scenario-paired, with
+    $10{,}000$-bootstrap $95\%$ confidence intervals.
+    \item \textbf{Population-averaged (GEE) logistic} regression with scenario as the cluster,
+    reporting odds ratios versus control.
+    \item \textbf{Ordinal analysis}: Kruskal--Wallis $\varepsilon^2$ on the graded strength.
+    \item \textbf{Stereotype-direction contrast}: a pre-registered signed contrast of
+    ``should-get-more-rest'' personas (child/senior/pregnant/depressed/woman) versus
+    ``should-get-less'' (executive/athlete/man).
+    \item \textbf{Cross-model agreement}: Pearson and Spearman correlations of per-cell
+    P(sleep) vectors and per-persona effect vectors across the five models.
+\end{itemize}
+
+Effect sizes and confidence intervals are reported alongside every $p$-value, following the
+guardrail of \citet{eloundou2024fairness}. All code is in \texttt{src/}; raw outputs are in
+\texttt{results/model\_outputs/}, with full numeric results in \texttt{results/analysis.json}.

@@ -1,0 +1,61 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\para{Verdict on the hypothesis.} The go-to-sleep mechanism is \emph{partially unified, with
+a clear hierarchy of drivers: model $\gg$ situation $>$ person}. The situation is the
+dominant within-model driver (H1, strongly supported; $\omega^2 = 0.11$, P from $0.42$ to
+$0.91$). A person effect exists for occupation, vulnerability, and age but not gender (H2,
+supported but small; $V \approx 0.14$--$0.19$), and it is about $3\times$ smaller than the
+situation effect and far smaller than the model effect. The scenario~$\times$~persona
+interaction is significant and itself exceeds the main person effect ($\omega^2 = 0.042$;
+H4 supported), meaning the same identity cue matters more in some scenarios than others.
+The cross-model dimension is where the behavior is \emph{least} unified (H5): a $0.15$ to
+$0.82$ spread in level and only moderate agreement on the conditioning pattern.
+
+\para{The surprise: physiological salience, not vulnerability.} The most novel result is the
+refutation of H3, the protective-stereotype prediction drawn from the literature. The person
+effect is not organized by demographic vulnerability; it tracks \emph{bodily stakes and the
+legitimacy of being awake}. Athletes, the ill, and children --- all of whom supply a salient
+physiological reason to rest --- get more sleep advice, while the night-shift nurse, whose
+wakefulness is part of her job, gets less. This is closer to the role-dependent finding of
+\citet{goalpref2026} than to flat demographic bias: the model appears to reason about
+\emph{why} the user is awake and whether sleeping now is locally sensible, rather than
+applying a category-level ``protect the vulnerable'' rule.
+
+\para{Relation to prior work.} Our results are consistent with \citet{eloundou2024fairness}
+(the person channel is real but modest, and gender effects are weak or absent here) and with
+\citet{differentcues2026} (single-cue, stereotype-shaped conclusions are fragile --- our
+naïve stereotype contrast failed and reversed). We extend the personalization-bias
+line~\citep{vijjini2024safety} by showing that, for protective wellbeing advice, the
+operative variable is situational legitimacy of wakefulness rather than demographic category.
+The dominant model effect echoes a recurring lesson: claims about ``what LLMs do'' rarely
+generalize across providers, and the biggest predictor of whether a user is told to go to
+bed is simply which model they are talking to.
+
+\para{Robustness.} Refusals were negligible ($1.9\%$). Every headline conclusion ---
+situation $>$ person, model dominance, and the non-stereotyped person effect --- holds across
+all four outcome definitions and in the ordinal analysis, so none is an artifact of the
+strength~$\geq 2$ threshold. The strict \texttt{insist\_sleep} and lexical \texttt{regex}
+definitions, which favor no particular panel member, give the same model ordering, which
+mitigates the self-preference concern of using an OpenAI judge alongside an OpenAI model.
+
+\para{Limitations.} (1) \emph{Single judge.} One judge model graded all responses; manual
+validation found it reliable at strength $0$/$3$ but noisier at $1{\leftrightarrow}2$. We
+mitigate with a strength~$\geq 2$ primary outcome and four-way sensitivity, but a multi-judge
+panel with inter-annotator $\kappa$ would strengthen the labels. (2) \emph{Explicit, single,
+English cues.} Identity is stated explicitly (``I'm 9 years old''); implicit or name-based
+cues, known to yield smaller effects, and non-English prompts were not tested, so the
+reported person effect is likely an upper bound on real-world implicit conditioning. (3)
+\emph{Synthetic probe.} Eight templated scenarios approximate but do not equal real extended
+sessions with multi-turn fatigue build-up. (4) \emph{Model snapshot.} Provider versions
+rotate; these results are a June-2026 snapshot of pinned IDs. (5) \emph{Scope of person.} We
+covered age, gender, occupation, and vulnerability; race, religion, politics, and disability
+were out of scope.
+
+\para{Broader implications.} ``LLMs tell people to go to sleep'' is not a property of LLMs
+but of a \emph{particular} model's late-night disposition. The user-facing fairness concern
+--- differential protective advice by identity --- is real but modest, and is organized by
+physiological salience rather than demographic vulnerability. For deployers, the practical
+takeaway is that wellbeing nudges are not a uniform safety reflex: their presence, strength,
+and conditioning vary by an order of magnitude across models, and any policy that assumes a
+consistent ``go to sleep'' behavior across a model fleet is mistaken.
